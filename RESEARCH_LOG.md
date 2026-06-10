@@ -552,3 +552,11 @@ Comparative review (VSCode session) of `sections_fable5/` against `sections/` co
 - Ruled out as over-engineering: recalibrating (h, xi) (externally anchored by design); chasing m2 (exchange microstructure outside the model object) or m4 (trough owned by the intermediation sector, covered by the IA two-class extension) with new parameters; forcing m1 to par through the convenience yield (documented tension with m5).
 
 Open item carried from session 51 stands: before submission, repoint `update_paper_numbers.py` consumers to the fable5 tree and re-run the pipeline end-to-end for the single-source-of-truth criterion.
+
+## Session 53 (2026-06-10) — Action plan executed: bootstrap symmetry, IV-weight insurance, tone and caption pass
+
+Compute launched (background, lands asynchronously): USDC block bootstrap raised 30 -> 100 replications; new symmetric USDT bootstrap on the 97-hour May-2022 Terra window (smoke test: Pi = 72.5 / 66.8 around the 71.2 point); inverse-bootstrap-variance moment weighting recalibration for both assets (the "why these weights" referee row, one IA panel); update_paper_numbers re-run end-to-end. Corresponding text slots: A3 bootstrap subsection, Section 5 robustness sentence, new IA moment-weighting panel plus the IA preamble and A2 listings.
+
+Editorial pass per the author's tone ruling (positive academic humility, limitations bounded and where needed in footnotes, no defeatist hedging): anchoring-led reframings in 4.2 and 5.3, the mechanism-check causality caveat compressed into a footnote, redundant self-deprecating closers cut, captions made self-contained (sources, definitions, holding clauses), A3 effective-rank paragraph moved to the SVD subsection. Sweep confirms zero defeatist-pattern matches and zero em dashes across the tree. main_fable5.pdf 59 pp clean.
+
+Open: integrate bootstrap/IV numbers on completion (A3, 5.3, IA panel + two content lists); the one flagged editorial decision for the author is whether Figure 1 (the full-page coordination-structure schematic) earns its page for a time-constrained reader.
