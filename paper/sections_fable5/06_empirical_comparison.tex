@@ -4,7 +4,7 @@ Section~\ref{sec:identification} delivered two risk premiums with inverted compo
 
 \begin{table}[H]
 \centering
-\caption{The three use cases of the empirical comparison.}\label{tab:use_cases}
+\caption{The three use cases of the empirical comparison: corridor, transaction size, rails compared, and the status of the public alternative. Cost inputs and sources are documented in Appendix~\ref{app:cost_data}.}\label{tab:use_cases}
 \begin{tabularx}{\textwidth}{llr>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
 \toprule
  & Corridor & Amount & Rails compared & Public alternative \\
@@ -24,7 +24,7 @@ The rails compared on each corridor are the following; the cost inputs and their
 
 \paragraph{Fintech remittance.} Non-bank providers (Wise, Remitly, WorldRemit) are materially cheaper on the major corridors; we use the RPW Q3 2025 non-bank means. The panel reports a G20 average of 3.66 percent for sending USD 500 \citep{rpw_q3_2025}.
 
-\paragraph{The stablecoin path.} The sender pays the on-chain transfer fee (about 37 basis points for USDT-on-Tron at USD 400, 15 for a low-fee L1/L2 USDC transfer), the destination off-ramp basis, and the structural risk premium of Section~\ref{sec:risk_factors}. One explicit cost is left out of the tables and bounded here instead, for symmetry with the all-in figures of the non-stablecoin rails: the platform fee of the on-ramp and off-ramp themselves. A retail user who enters and exits through an exchange or fiat gateway pays a posted fee of roughly 10 to 50 basis points per leg at retail size (Appendix~\ref{app:cost_data}), on top of the execution costs already priced in the comparison, namely the below-par conversion loss inside $\Pi_{\text{risk}}$ and the local-currency basis $b_{\text{dest}}$. Adding 20 to 100 basis points of platform fees to the stablecoin column tightens the cross-border results without overturning most of them: the US-Mexico margin over Wise narrows from 130 basis points to between 30 and 110, the EU-Brazil USDC margin over Wise from 120 to between 20 and 100, and at the upper end of the range the USDT path on EU-Brazil loses its 98-basis-point edge over Wise, while the domestic dominance of PIX is reinforced. The stablecoin's advantage where it wins is real but thinner than the headline tables suggest for a retail user without direct exchange access.
+\paragraph{The stablecoin path.} The sender pays the on-chain transfer fee (about 37 basis points for USDT-on-Tron at USD 400, 15 for a low-fee L1/L2 USDC transfer), the destination off-ramp basis, and the structural risk premium of Section~\ref{sec:risk_factors}. One explicit cost is left out of the tables and bounded here instead, for symmetry with the all-in figures of the non-stablecoin rails: the platform fee of the on-ramp and off-ramp themselves. A retail user who enters and exits through an exchange or fiat gateway pays a posted fee of roughly 10 to 50 basis points per leg at retail size (Appendix~\ref{app:cost_data}), on top of the execution costs already priced in the comparison, namely the below-par conversion loss inside $\Pi_{\text{risk}}$ and the local-currency basis $b_{\text{dest}}$. Adding 20 to 100 basis points of platform fees to the stablecoin column tightens the cross-border results without overturning most of them: the US-Mexico margin over Wise narrows from 130 basis points to between 30 and 110, the EU-Brazil USDC margin over Wise from 120 to between 20 and 100, and at the upper end of the range the USDT path on EU-Brazil loses its 98-basis-point edge over Wise, while the domestic dominance of PIX is reinforced.
 
 The total cost for a non-stablecoin rail is
 \begin{equation}\label{eq:total_cost_nonstable}
@@ -67,7 +67,7 @@ A US-based household sends USD 400 to Mexico. USDT on Tron dominates real-world 
 \begin{table}[H]
 \centering
 \caption{Use case 2: US-Mexico remittance, USDT-on-Tron, transaction value USD 400. SWIFT correspondent and Wise figures are RPW Q3 2025 means; USDT total adds the Mexican peso off-ramp basis.}\label{tab:uc2}
-\resizebox{\textwidth}{!}{\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrr}
 \toprule
 Rail & Fee (bps) & Basis / WC (bps) & Risk (bps) & Total (bps) \\
 \midrule
@@ -75,7 +75,7 @@ USDT on Tron                     & 37.5  & 12.0 & 71.2 & 120.7 \\
 Wise (fintech remittance)        & 250.0 & 1.23 & 0.0  & 251.2 \\
 SWIFT correspondent (Bank avg)   & 331.0 & 2.47 & 0.0  & 333.5 \\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 USDT wins at 121 basis points, beating Wise by 130 basis points and the SWIFT correspondent average by 213 basis points. The stablecoin's advantage is robust to the addition of the empirically measured Mexican off-ramp basis. The fintech-upgraded incumbent (Wise) is closer to the stablecoin than the traditional incumbent (SWIFT): the cross-border payments innovation gap has been partly closed by fintech entry, and the residual gap is what the stablecoin path captures.
