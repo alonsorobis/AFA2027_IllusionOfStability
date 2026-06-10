@@ -3,6 +3,7 @@
 
 **Project start date:** 2026-06-01 (the earliest date permitted by the call).
 **Submission deadline:** 2026-08-31.
+**Status:** Repository pushed to GitHub at https://github.com/alonsorobis/AFA2027_IllusionOfStability (verified 2026-06-10)
 **Author:** Andres Alonso-Robisco (IE University / Banco de España).
 **Target venues:** AFA 2027 Special Session (primary); Journal of Economic Dynamics and Control (alternative outlet for the same paper if not selected).
 

@@ -69,6 +69,7 @@ Per the AFA 2027 call, the submission must include a time log of human activitie
 | 48 | 2026-06-09 | -- | -- | ~15 (est.) | S | Fixed Figure 5 (cross-stablecoin map): de-overlapped the DAI/USDC labels and region annotations, and sized the bubbles by approximate peak circulating supply (large vs small issuers). Recompiled clean, 51 pp. **Time is an estimate to confirm.** | [session 48](conversations/2026-06-09_session_48.md) |
 | 49 | 2026-06-09 | -- | -- | ~5 (est.) | S | Removed the in-figure title and footnote from Figure 5; moved the bubble-size note into the LaTeX caption. Recompiled, 52 pp. **Time is an estimate to confirm.** | [session 49](conversations/2026-06-09_session_49.md) |
 | 50 | 2026-06-09 | -- | -- | ~5 (est.) | S | Removed the quadrant figure (former Figure 6) from §7.1 (redundant with the bar decomposition and the all-coins map). Recompiled, 51 pp. **Time is an estimate to confirm.** | [session 50](conversations/2026-06-09_session_50.md) |
+| 51 | 2026-06-10 | -- | -- | ~45 (est.) | S | Referee-revision plan P1–P5 executed in the parallel main_fable5 tree (fit honesty, ℓ_D,b re-anchoring, ℓ_C exposure window, (h,ξ) anchoring, reserve comparative static, minor sweep, refs purge); two audit rounds; 58 pp + 10 pp compile clean. **Time is an estimate to confirm.** | [session 51](conversations/2026-06-10_session_51.md) |
 
 ## Summary
 
