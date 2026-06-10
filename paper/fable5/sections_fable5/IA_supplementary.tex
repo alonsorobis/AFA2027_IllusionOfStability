@@ -1,6 +1,6 @@
 \section{Stablecoin pricing around recent regulatory enactments}\label{ia:regulatory_descriptive}
 
-The structural risk premium $\Pi_{\text{risk}}$ prices counterparty and depeg risk; future regulatory change enters the corridor comparison through the observable off-ramp basis rather than the premium. This appendix documents how that basis behaves around the two most recent stablecoin-side enactments: Markets in Crypto-Assets Regulation (MiCA) Title V, applicable across EU member states from 30 December 2024, and Banco Central do Brasil Resolution 561/2026 on virtual asset service providers, effective November 2025.
+The structural expected loss $\Pi_{\text{risk}}$ prices counterparty and depeg risk; future regulatory change enters the corridor comparison through the observable off-ramp basis rather than the expected loss. This appendix documents how that basis behaves around the two most recent stablecoin-side enactments: Markets in Crypto-Assets Regulation (MiCA) Title V, applicable across EU member states from 30 December 2024, and Banco Central do Brasil Resolution 561/2026 on virtual asset service providers, effective November 2025.
 
 \paragraph{Brazil and Resolution 561/2026.} Figure~\ref{fig:basis_brazil_descriptive} reports the seven-day rolling mean of the stablecoin basis against the official USD-quoted local exchange rate for Brazil, Mexico, Colombia, and Argentina, computed from daily closing prices on USDT and USDC pairs in those local currencies between June 2024 and June 2026. The vertical line marks the Resolution 561/2026 signature date. The Brazilian basis enters the post-event window at the level it had been trending toward over the preceding twelve months; its mean is approximately 38 basis points in the year before the event and approximately 21 basis points in the six months after. The three LATAM controls follow stable patterns over the same window. There is no visible reversal, level shift, or change in slope in the Brazilian series around the event date.
 
@@ -33,11 +33,11 @@ The one-class specification used in the main calibration prices the expected los
 \end{itemize}
 The signal noise of the market-maker class is ambiguous in the literature: pure arbitrageurs in \citet{ma_zeng_zhang_2025} are better informed than retail, while the noise-trader extension in the same paper is noisier. For an aggregate class that combines authorised arbitrage with inventory and speculative trading, we take $\sigma^M \in [\sigma^P, 2 \sigma^P]$, with the central case at $\sigma^M = \sigma^P$. The convenience yield $\omega^M = 0$ is non-negotiable.
 
-\paragraph{Numerical results.} Table~\ref{tab:two_class_robustness} reports the class-$P$ and class-$M$ premia under the central and bracket values of $\alpha$ for both stablecoins, holding the calibrated $\phi^*$ of the main paper fixed for the class-$P$ block and applying $\omega^M = 0$ with $\sigma^M = \sigma^P$ to the class-$M$ block. The premia are computed by the same K-class fixed-point solver that underlies the one-class calibration, now run with $\pi^P = 1 - \alpha$ and $\pi^M = \alpha$ in place of the degenerate one-class population. The fixed-point converges on every cell of the grid.
+\paragraph{Numerical results.} Table~\ref{tab:two_class_robustness} reports the class-$P$ and class-$M$ expected losses under the central and bracket values of $\alpha$ for both stablecoins, holding the calibrated $\phi^*$ of the main paper fixed for the class-$P$ block and applying $\omega^M = 0$ with $\sigma^M = \sigma^P$ to the class-$M$ block. The expected losses are computed by the same K-class fixed-point solver that underlies the one-class calibration, now run with $\pi^P = 1 - \alpha$ and $\pi^M = \alpha$ in place of the degenerate one-class population. The fixed-point converges on every cell of the grid.
 
 \begin{table}[H]
 \centering
-\caption{Two-class robustness: class-$P$ premium (payment holder, the headline) and class-$M$ premium (market maker, not borne by the payment holder) under literature-anchored values of $\alpha$. Components in basis points; $\phi^*$ fixed at the calibrated value; $\omega^M = 0$; $\sigma^M = \sigma^P$ in the central column and $\sigma^M = 2 \sigma^P$ in the variation column.}\label{tab:two_class_robustness}
+\caption{Two-class robustness: class-$P$ expected loss (payment holder, the headline) and class-$M$ expected loss (market maker, not borne by the payment holder) under literature-anchored values of $\alpha$. Components in basis points; $\phi^*$ fixed at the calibrated value; $\omega^M = 0$; $\sigma^M = \sigma^P$ in the central column and $\sigma^M = 2 \sigma^P$ in the variation column.}\label{tab:two_class_robustness}
 \begin{tabular}{lrrr}
 \toprule
 Asset / cell                                          & $\Pi_{\text{risk}}^P$ & $\Pi_{\text{risk}}^M$ & stress trough \\
@@ -57,17 +57,17 @@ USDT, $\alpha = 0.075$, $\sigma^M = 2 \sigma^P$       & 71.0 & 71.2 & 0.997 \\
 \end{tabular}
 \end{table}
 
-\paragraph{Implication.} Two findings frame the robustness check. First, within the two-class spec, the class-$P$ premium is stable across the literature-anchored grid: USDC sits at $[48.2, 48.6]$ basis points, USDT at $71.0$ basis points. Varying $\alpha$ within its anchored range and $\sigma^M$ within $[\sigma^P, 2 \sigma^P]$ moves the headline by less than 0.4 basis points, and the use-case rankings reported in the main paper hold at every cell of the grid. Second, the discrepancy between the two-class USDC headline and the one-class headline is about half a basis point, smaller than the 2.7 basis points spanned by the sensitivity panel for the marginally identified parameters in Section~\ref{ia:robustness_panels}; the one-class headline reported in the main text sits as the conservative upper bound between the two specifications. The empirical trough is not affected by the addition of the market-maker class because trough depth is governed by the secondary microstructure block $(\psi, \nu, \mu_q, \zeta)$ rather than by the holder mix; the under-identified subspace of the one-class calibration shapes the loss carried by the class-$M$ block (column $\Pi_{\text{risk}}^M$) without changing the payments cost economics borne by the payment holder (column $\Pi_{\text{risk}}^P$).
+\paragraph{Implication.} Two findings frame the robustness check. First, within the two-class spec, the class-$P$ expected loss is stable across the literature-anchored grid: USDC sits at $[48.2, 48.6]$ basis points, USDT at $71.0$ basis points. Varying $\alpha$ within its anchored range and $\sigma^M$ within $[\sigma^P, 2 \sigma^P]$ moves the headline by less than 0.4 basis points, and the use-case rankings reported in the main paper hold at every cell of the grid. Second, the discrepancy between the two-class USDC headline and the one-class headline is about half a basis point, smaller than the 2.7 basis points spanned by the sensitivity panel for the marginally identified parameters in Section~\ref{ia:robustness_panels}; the one-class headline reported in the main text sits as the conservative upper bound between the two specifications. The empirical trough is not affected by the addition of the market-maker class because trough depth is governed by the secondary microstructure block $(\psi, \nu, \mu_q, \zeta)$ rather than by the holder mix; the under-identified subspace of the one-class calibration shapes the loss carried by the class-$M$ block (column $\Pi_{\text{risk}}^M$) without changing the payments cost economics borne by the payment holder (column $\Pi_{\text{risk}}^P$).
 
 \section{Identification robustness panels}\label{ia:robustness_panels}
 
-These two panels support the statement in the main paper that the headline risk premium is insensitive to the marginally identified directions of the calibration. Both hold the calibrated parameter vector $\phi^*$ fixed and re-evaluate the headline.
+These two panels support the statement in the main paper that the headline expected loss is insensitive to the marginally identified directions of the calibration. Both hold the calibrated parameter vector $\phi^*$ fixed and re-evaluate the headline.
 
-\paragraph{Marginally identified stress-regime parameters.} The two marginally identified parameters $\mu_s$ and $\tau_s$ enter the headline only through the stress-regime depeg component $\ell_{D,s}$. We sweep each across its parameter interior on a $3 \times 3$ grid that combines lower bound, baseline, and upper bound for both, and recompute the headline at each combination. Table~\ref{tab:sensitivity} reports the total risk premium $\Pi_{\text{risk}}$ at every cell; the baseline cell ($\mu_s=0.212$, $\tau_s=9.88$) returns $48.5$\,bps, reproducing the $48.9$-bp headline within Monte Carlo error.
+\paragraph{Marginally identified stress-regime parameters.} The two marginally identified parameters $\mu_s$ and $\tau_s$ enter the headline only through the stress-regime depeg component $\ell_{D,s}$. We sweep each across its parameter interior on a $3 \times 3$ grid that combines lower bound, baseline, and upper bound for both, and recompute the headline at each combination. Table~\ref{tab:sensitivity} reports the total expected loss $\Pi_{\text{risk}}$ at every cell; the baseline cell ($\mu_s=0.212$, $\tau_s=9.88$) returns $48.5$\,bps, reproducing the $48.9$-bp headline within Monte Carlo error.
 
 \begin{table}[H]
 \centering
-\caption{Sensitivity of the total risk premium $\Pi_{\text{risk}}$ (basis points) to the marginally identified stress-regime parameters $\mu_s$ and $\tau_s$. Bracketed numbers report the implied stress-regime depeg component $\ell_{D,s}$ in basis points.}\label{tab:sensitivity}
+\caption{Sensitivity of the total expected loss $\Pi_{\text{risk}}$ (basis points) to the marginally identified stress-regime parameters $\mu_s$ and $\tau_s$. Bracketed numbers report the implied stress-regime depeg component $\ell_{D,s}$ in basis points.}\label{tab:sensitivity}
 \begin{tabular}{lccc}
 \toprule
 & $\tau_s = 1.00$ & $\tau_s = 9.88$ & $\tau_s = 50.00$ \\
@@ -86,7 +86,7 @@ The headline spans $[45.9, 48.6]$ basis points across all eight off-baseline cel
 
 \begin{table}[H]
 \centering
-\caption{Sensitivity of the total risk premium to the baseline-prior precision $\tau_b$, holding all other parameters at $\phi^*$; $\sigma_\theta^b = 1/\sqrt{\tau_b}$ is the implied baseline fundamental standard deviation.}\label{tab:sens_tau_b}
+\caption{Sensitivity of the total expected loss to the baseline-prior precision $\tau_b$, holding all other parameters at $\phi^*$; $\sigma_\theta^b = 1/\sqrt{\tau_b}$ is the implied baseline fundamental standard deviation.}\label{tab:sens_tau_b}
 \begin{tabular}{rrrrrr}
 \toprule
 $\tau_b$ & $\sigma_\theta^b$ & $\ell_C$ (bps) & $\ell_{D,b}$ (bps) & $\ell_{D,s}$ (bps) & $\Pi_{\text{risk}}$ (bps) \\
@@ -102,14 +102,14 @@ The headline spans $[48.0, 53.8]$ basis points across the grid, a range of $5.8$
 
 \section{Counterparty-parameter sensitivity}\label{sub:sens_counterparty}
 
-USDC is calibrated with $h = 0.01$ and $\xi = 0.20$, USDT with $h = 0.02$ and $\xi = 0.30$. Table~\ref{tab:sens_counterparty} reports the total premium under three alternative settings that bracket the plausible range for each issuer based on enforcement history and reserve composition.
+USDC is calibrated with $h = 0.01$ and $\xi = 0.20$, USDT with $h = 0.02$ and $\xi = 0.30$. Table~\ref{tab:sens_counterparty} reports the total expected loss under three alternative settings that bracket the plausible range for each issuer based on enforcement history and reserve composition.
 
 \begin{table}[H]
 \centering
-\caption{Total risk premium under alternative counterparty parameters $(h, \xi)$.}\label{tab:sens_counterparty}
+\caption{Total expected loss under alternative counterparty parameters $(h, \xi)$.}\label{tab:sens_counterparty}
 \begin{tabular}{llrr}
 \toprule
-Asset & Setting & $(h, \xi)$ & Total premium (bps) \\
+Asset & Setting & $(h, \xi)$ & Total expected loss (bps) \\
 \midrule
 USDC & lower bound       & $(0.005, 0.15)$ & 36.2 \\
 USDC & central (body)    & $(0.010, 0.20)$ & 48.9 \\
@@ -122,7 +122,7 @@ USDT & upper bound       & $(0.025, 0.35)$ & 98.8 \\
 \end{tabular}
 \end{table}
 
-The USDC premium spans $[36, 67]$ basis points; the USDT premium spans $[49, 99]$. The two ranges overlap in the middle (USDC upper bound 67 versus USDT lower bound 49), but the central values (49 versus 71) remain well separated and the inverted compositions reported in the main paper are preserved across the ranges. The qualitative claim that USDC is depeg-dominant and USDT is counterparty-dominant is robust to the choice of $(h, \xi)$ within the plausible range.
+The USDC expected loss spans $[36, 67]$ basis points; the USDT expected loss spans $[49, 99]$. The two ranges overlap in the middle (USDC upper bound 67 versus USDT lower bound 49), but the central values (49 versus 71) remain well separated and the inverted compositions reported in the main paper are preserved across the ranges. The qualitative claim that USDC is depeg-dominant and USDT is counterparty-dominant is robust to the choice of $(h, \xi)$ within the plausible range.
 
 \section{Residual diagnostics of the calibration}\label{sub:residual_diagnostics}\label{sub:residuals}
 
@@ -143,12 +143,12 @@ Table~\ref{tab:summary_uc} consolidates the per-corridor ordering of the main pa
 \toprule
 Use case & Asset & Stablecoin (bps) & Winner (bps) & Outcome \\
 \midrule
-BR domestic retail    & USDT & 467.2 & PIX (0)          & Dominated by 467 bps \\
-US-MX remittance      & USDT & 120.7 & USDT (121)       & Wins by 130 over Wise \\
-EU-BR cross-border    & USDC & 84.9  & USDC (85)        & Wins by 120 over Wise \\
-EU-BR cross-border    & USDT & 107.2 & USDT (107)       & Wins by 98 over Wise \\
+BR domestic retail    & USDT & 517.2 & PIX (0)          & Dominated by 517 bps \\
+US-MX remittance      & USDT & 170.7 & USDT (171)       & Wins by 80 over Wise \\
+EU-BR cross-border    & USDC & 134.9 & USDC (135)       & Wins by 70 over Wise \\
+EU-BR cross-border    & USDT & 157.2 & USDT (157)       & Wins by 48 over Wise \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-On the cross-border corridors, the fintech-upgraded incumbent (Wise) is structurally closer to the stablecoin path than the traditional incumbent (SWIFT). The stablecoin's edge over Wise (98 to 130 basis points depending on the asset and corridor) exceeds the calibrated structural risk premium itself, so the stablecoin path still wins net of risk after pricing the off-ramp basis. SWIFT is dominated in every cross-border case by an order of magnitude.
+On the cross-border corridors, the fintech-upgraded incumbent (Wise) is structurally closer to the stablecoin path than the traditional incumbent (SWIFT). The stablecoin's edge over Wise (48 to 80 basis points depending on the asset and corridor) survives the full payment circuit, the round-trip ramp fees and the off-ramp basis included, so the stablecoin path still wins net of cost where no upgraded public rail exists. SWIFT is dominated in every cross-border case by an order of magnitude.

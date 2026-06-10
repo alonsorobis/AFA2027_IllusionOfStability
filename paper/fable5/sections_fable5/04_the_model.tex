@@ -51,13 +51,13 @@ Three propositions give the model the properties the calibration relies on; all 
 Assume $\nu > 1$, $\sigma > 0$, $0 < R < 1$, $M>0$, and that the best-response operator $T$ on threshold profiles is a contraction in the sup norm. Then \eqref{eq:F} has a unique solution $s^* \in \mathbb{R}$.
 \end{proposition}
 
-The proposition gives a single equilibrium threshold $s^*$ at any admissible parameter vector, so the conversion mass $D^*(\theta)$ is determined at each fundamental and the calibration recovers one risk premium per issuer. The contraction condition is verified numerically at the calibrated parameters.
+The proposition gives a single equilibrium threshold $s^*$ at any admissible parameter vector, so the conversion mass $D^*(\theta)$ is determined at each fundamental and the calibration recovers one expected loss per issuer. The contraction condition is verified numerically at the calibrated parameters.
 
 \begin{proposition}[Reserve comparative static]\label{prop:reserves}
 At the equilibrium $s^*$, $\partial D^*/\partial R \geq 0$ in the strict interior of the parameter space.
 \end{proposition}
 
-A deeper liquid reserve sustains a higher secondary price at any conversion volume, which raises the value of converting and so weakly raises the equilibrium conversion mass. This is the reserve-quality channel of \citet{ma_zeng_zhang_2025}. The sign reads as the opposite of the bank-run intuition, and the difference is worth stating rather than leaving implicit. In \citet{goldstein_pauzner_2005_demand_deposits} stronger fundamentals shrink the run region because withdrawal is destructive: the deposit contract liquidates assets at a loss and late claimants stand behind early ones, so safety means fewer agents running. Redemption here is not destructive withdrawal but conversion at a price. More par capacity makes exit safer, so weakly more holders take it, and what deeper reserves reduce is not the volume of conversion but its cost: a larger share clears at par and the spillover clears against a higher secondary price. The conversion mass $D^*$ is therefore not the policy object; the priced loss is. Numerically, at the calibrated parameters the premium falls monotonically in $R$ while the conversion mass rises: re-solving the model on a reserve grid from $R=0.4$ to $R=0.8$ moves $\Pi_{\text{risk}}$ from 63.4 to 47.0 basis points for USDC, with the conditional stress depeg falling from 462 to 102 basis points, and from 71.3 to 71.2 for USDT; USDC's baseline conversion mass rises from 0.485 to 0.497 over the same grid. So $\partial \Pi_{\text{risk}}/\partial R < 0$ holds throughout the grid even as $\partial D^*/\partial R \geq 0$, and a supervisor should read Proposition~\ref{prop:reserves} jointly with that comparative static: liquidity requirements lower the holder's expected loss precisely by making redemption safe enough that more of it happens at par.
+A deeper liquid reserve sustains a higher secondary price at any conversion volume, which raises the value of converting and so weakly raises the equilibrium conversion mass. This is the reserve-quality channel of \citet{ma_zeng_zhang_2025}. The sign reads as the opposite of the bank-run intuition, and the difference is worth stating rather than leaving implicit. In \citet{goldstein_pauzner_2005_demand_deposits} stronger fundamentals shrink the run region because withdrawal is destructive: the deposit contract liquidates assets at a loss and late claimants stand behind early ones, so safety means fewer agents running. Redemption here is not destructive withdrawal but conversion at a price. More par capacity makes exit safer, so weakly more holders take it, and what deeper reserves reduce is not the volume of conversion but its cost: a larger share clears at par and the spillover clears against a higher secondary price. The conversion mass $D^*$ is therefore not the policy object; the priced loss is. Numerically, at the calibrated parameters the expected loss falls monotonically in $R$ while the conversion mass rises: re-solving the model on a reserve grid from $R=0.4$ to $R=0.8$ moves $\Pi_{\text{risk}}$ from 63.4 to 47.0 basis points for USDC, with the conditional stress depeg falling from 462 to 102 basis points, and from 71.3 to 71.2 for USDT; USDC's baseline conversion mass rises from 0.485 to 0.497 over the same grid. So $\partial \Pi_{\text{risk}}/\partial R < 0$ holds throughout the grid even as $\partial D^*/\partial R \geq 0$, and a supervisor should read Proposition~\ref{prop:reserves} jointly with that comparative static: liquidity requirements lower the holder's expected loss precisely by making redemption safe enough that more of it happens at par.
 
 \begin{proposition}[Convenience-yield comparative static]\label{prop:convenience}
 At the equilibrium $s^*$, $\partial D^*/\partial \omega < 0$ in the strict interior of the parameter space.
@@ -65,9 +65,9 @@ At the equilibrium $s^*$, $\partial D^*/\partial \omega < 0$ in the strict inter
 
 A higher payment-use convenience yield raises the value of holding and so lowers the equilibrium conversion mass: a more useful stablecoin retains holders even at marginally lower fundamentals. This is the adoption-fragility channel of \citet{bertsch_2025_adoption_fragility}.
 
-Together the two comparative statics formalise the claim of Section~\ref{sub:not_homogeneous} that reserve composition and payment use are primitives that move the priced premium, not stylistic differences between issuers.
+Together the two comparative statics formalise the claim of Section~\ref{sub:not_homogeneous} that reserve composition and payment use are primitives that move the priced expected loss, not stylistic differences between issuers.
 
-\subsection{The risk premium}\label{sub:what_it_delivers}
+\subsection{The expected loss}\label{sub:what_it_delivers}
 
 The output of the model, for each issuer under its own calibration, is three expected per-unit losses in basis points,
 \begin{align}
@@ -75,8 +75,8 @@ The output of the model, for each issuer under its own calibration, is three exp
 \ell_{D,b} &= \mathbb{E}_b\!\left[D(\theta; s^*)\,(1 - p^{sec}(D(\theta; s^*)))\right] \cdot 10^4,\label{eq:ellDb} \\
 \ell_{D,s} &= \mathbb{E}_s\!\left[D(\theta; s^*)\,(1 - p^{sec}(D(\theta; s^*)))\right] \cdot 10^4,\label{eq:ellDs}
 \end{align}
-where $\mathbb{E}_\rho$ is the expectation under regime $\rho$. The counterparty component $\ell_C$ is the reduced-form credit term of Section~\ref{sub:counterparty}, evaluated at the one-year exposure window $T=1$ of the continuous-balance holder defined there and independent of the coordination stage; the two depeg components are the structural output of the global game. Their probability-weighted sum is the risk premium the holder bears,
+where $\mathbb{E}_\rho$ is the expectation under regime $\rho$. The counterparty component $\ell_C$ is the reduced-form credit term of Section~\ref{sub:counterparty}, evaluated at the one-year exposure window $T=1$ of the continuous-balance holder defined there and independent of the coordination stage; the two depeg components are the structural output of the global game. Their probability-weighted sum is the expected loss the holder bears,
 \begin{equation}\label{eq:total_risk_premium}
 \Pi_{\text{risk}} = \ell_C + (1-p_s)\,\ell_{D,b} + p_s\,\ell_{D,s},
 \end{equation}
-which we add to the on-chain transfer fee. Section~\ref{sec:calibration} calibrates this premium separately for the two stablecoins.
+which we add to the on-chain transfer fee. Section~\ref{sec:calibration} calibrates this expected loss separately for the two stablecoins.

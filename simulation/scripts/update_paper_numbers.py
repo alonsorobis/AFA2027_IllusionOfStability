@@ -50,15 +50,23 @@ for a in ("USDC", "USDT"):
     snap[a] = {"cp": cp, "db_cond": db, "ds_cond": ds, "db_w": dbw, "ds_w": dsw, "Pi": Pi}
     print(f"  {a}: Pi={Pi:.1f}  cp={cp:.1f}({100*cp/Pi:.0f}%)  dbw={dbw:.1f}({100*dbw/Pi:.0f}%)  dsw={dsw:.2f}({100*dsw/Pi:.0f}%)")
 
-# Use cases
+# Use cases. The stablecoin path prices the full payment circuit:
+#   on-ramp (fiat->stablecoin) + on-chain transfer fee + expected loss while
+#   held + destination basis + off-ramp (stablecoin->local fiat).
+# F_ON and F_OFF are the on- and off-ramp platform fees, central values within
+# the 10-50 bps/leg retail range documented in Appendix D.
+F_ON = 25.0
+F_OFF = 25.0
+RAMP = F_ON + F_OFF
+snap["ramp"] = {"f_on": F_ON, "f_off": F_OFF, "total": RAMP}
 uc = {
-  "UC1_BR_USDT_40":   375.0 + 21.0 + snap["USDT"]["Pi"],
-  "UC2_USMX_USDT_400":  37.5 + 12.0 + snap["USDT"]["Pi"],
-  "UC3_EUBR_USDC_1000": 15.0 + 21.0 + snap["USDC"]["Pi"],
-  "UC3_EUBR_USDT_1000": 15.0 + 21.0 + snap["USDT"]["Pi"],
+  "UC1_BR_USDT_40":   375.0 + RAMP + 21.0 + snap["USDT"]["Pi"],
+  "UC2_USMX_USDT_400":  37.5 + RAMP + 12.0 + snap["USDT"]["Pi"],
+  "UC3_EUBR_USDC_1000": 15.0 + RAMP + 21.0 + snap["USDC"]["Pi"],
+  "UC3_EUBR_USDT_1000": 15.0 + RAMP + 21.0 + snap["USDT"]["Pi"],
 }
 snap["use_cases"] = uc
-print("USE CASES (total bps):", {k: round(v,1) for k,v in uc.items()})
+print(f"USE CASES (total bps, incl. {RAMP:.0f} bps on+off ramp):", {k: round(v,1) for k,v in uc.items()})
 print(f"  UC2 USDT {uc['UC2_USMX_USDT_400']:.1f}: vs Wise 251.2 by {251.2-uc['UC2_USMX_USDT_400']:.1f}; vs SWIFT 333.5 by {333.5-uc['UC2_USMX_USDT_400']:.1f}")
 print(f"  UC3 USDC {uc['UC3_EUBR_USDC_1000']:.1f}: vs Wise 205.2 by {205.2-uc['UC3_EUBR_USDC_1000']:.1f}; vs SWIFT 489.5 by {489.5-uc['UC3_EUBR_USDC_1000']:.1f}")
 print(f"  UC3 USDT {uc['UC3_EUBR_USDT_1000']:.1f}: vs Wise 205.2 by {205.2-uc['UC3_EUBR_USDT_1000']:.1f}")
