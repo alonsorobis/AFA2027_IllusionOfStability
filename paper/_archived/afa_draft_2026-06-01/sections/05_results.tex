@@ -1,0 +1,104 @@
+\section{Results}\label{sec:results}
+
+This section reports the calibrated parameter vector, the moment-matching diagnostics, the boundary evaluation on USDT, and the TerraUSD falsification. The numbers reported here come from the joint calibration of USDC and DAI dated 2026-06-02T06:23:37Z, with reproducibility artefacts at \texttt{data/processed/joint\_calibration\_20260602T062337Z/}.
+
+\subsection{Calibrated parameter vector}\label{sub:phi_star}
+
+Table~\ref{tab:phi_star} reports the calibrated values of the ten free parameters and the three externally fixed parameters. The joint calibration achieves a loss of $\mathcal{L}(\boldsymbol{\phi}^\star) = 4.01$ on twelve price moments (six per stablecoin), down from $\mathcal{L} = 122.3$ at the warm-up start. The calibrated type-specific signal noises satisfy $\sigma_{\text{cross-border}} = 0.283 > \sigma_{\text{retail}} = 0.235 > \sigma_{\text{wholesale}} = 0.10 > \sigma_{\text{market-maker}} = 0.05$, consistent with the economic interpretation that cross-border end users are the least-informed payment cohort and that market makers are the best-informed. The two stress-regime means satisfy $\theta_{\text{stress}}^{\text{USDC}} = 0.15 < \theta_{\text{stress}}^{\text{DAI}} = 0.43$, indicating that the calibration assigns USDC a more stressed fundamental than DAI at the March 2023 episode despite DAI's deeper realised minimum, an artefact of DAI's lower average severity in stress that the optimisation prioritises.
+
+\begin{table}[h]
+\centering
+\caption{Calibrated parameter vector $\boldsymbol{\phi}^\star$. The microstructure block is shared across regimes; the prior on $\theta$ shifts between baseline and stress through the mean and the precision. The calibration reduces the weighted L$_2$ loss from approximately $18{,}153$ at the template to $3.37$ at $\boldsymbol{\phi}^\star$. Walltimes for the warm-up pass ($N=100$, $\text{maxiter}=40$) and the main pass ($N=300$, $\text{maxiter}=120$).}
+\label{tab:phi_star}
+\begin{tabular}{lrr}
+\toprule
+Parameter & Value & Bounds / source \\
+\midrule
+\multicolumn{3}{l}{\emph{Free parameters (10)}} \\
+$\sigma_{\text{retail}}$ & $0.235$ & $[0.05,\,1.00]$ \\
+$\sigma_{\text{cross-border}}$ & $0.283$ & $[0.05,\,1.00]$ \\
+$\psi$ & $0.295$ & $[0.01,\,5.00]$ \\
+$\nu$ & $1.869$ & $[1.00,\,4.00]$ \\
+$\mu_q$ & $0.046$ & $[0.00,\,0.50]$ \\
+$\zeta$ & $0.503$ & $[0.00,\,5.00]$ \\
+$\tau_{\text{baseline}}$ & $289.3$ & $[100,\,1000]$ \\
+$\tau_{\text{stress}}$ & $8.88$ & $[1,\,50]$ \\
+$\theta_{\text{stress}}^{\text{USDC}}$ & $0.151$ & $[-1.00,\,1.50]$ \\
+$\theta_{\text{stress}}^{\text{DAI}}$ & $0.434$ & $[-1.00,\,1.50]$ \\
+\midrule
+\multicolumn{3}{l}{\emph{Externally fixed parameters (3)}} \\
+$\sigma_{\text{market-maker}}$ & $0.05$ & arbitrageur information advantage \\
+$\sigma_{\text{wholesale}}$ & $0.10$ & institutional user information \\
+$\theta_{\text{baseline}}$ & $1.00$ & par-convertibility definition \\
+\midrule
+Warm-up walltime & $16.0$ min & $N=100$, maxiter $50$ \\
+Main-pass walltime & $94.8$ min & $N=300$, maxiter $100$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The calibrated $\tau_{\text{baseline}} = 289.3$ and $\tau_{\text{stress}} = 8.88$ confirm the regime split. The baseline prior on $\theta$ has standard deviation $1/\sqrt{\tau_{\text{baseline}}} \approx 0.059$, which delivers the quasi-deterministic near-par baseline observed in the data for both stablecoins. The stress prior has standard deviation $1/\sqrt{\tau_{\text{stress}}} \approx 0.336$, which delivers the fat-tailed cross-section seen during the March 2023 episode. The shared microstructure block is therefore not asked to be uniformly noisy. The convexity $\nu = 1.87$ is comfortably above unity, consistent with the documented nonlinearity of secondary-market impact under sell pressure.
+
+\subsection{Moment-matching diagnostics}\label{sub:moments_fit}
+
+Table~\ref{tab:moments_fit} reports the target and model-implied values for the twelve moments at the joint optimum. For each asset, four out of six moments match the data within their economic interpretation. The baseline large-depeg frequency is matched exactly at zero, as a structural payoff of the regime-dependent dispersion. The baseline standard deviation matches the data within $1.5$ basis points for USDC and within $0.5$ basis points for DAI. The stress mean absolute depeg matches within $1$ basis point for both assets. For USDC, the stress large-depeg frequency matches within $7$ percentage points; for DAI the model under-shoots by $23$ percentage points, reflecting that the DAI stress regime in the data has a higher fraction of hours below the threshold than the model can produce at the shared microstructure block. The two moments that do not match cleanly across either asset are the baseline mean close, where the model sits about $80$ basis points below par for both stablecoins, and the stress minimum close, where the model produces a floor at $0.975$ while the data minima are $0.902$ for USDC and $0.892$ for DAI. The stress-minimum gap reflects a structural floor of the secondary-market block at the calibrated parameters: the same residual was visible in the single-asset calibration that the joint specification supersedes.
+
+\begin{table}[h]
+\centering
+\caption{Target versus model-implied moments at the joint $\boldsymbol{\phi}^\star$. Baseline and stress windows as in Table~\ref{tab:targets}. The eight matched moments (four per asset) lie within their economic interpretation. The four residual moments (baseline mean and stress minimum, per asset) reflect a single structural pattern: the floor of the calibrated secondary-market block sits at roughly $0.975$ while the realised data minima sit at $0.89$-$0.90$.}
+\label{tab:moments_fit}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{3}{c}{USDC} & \multicolumn{3}{c}{DAI} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Moment & Target & Model & Abs. err. & Target & Model & Abs. err. \\
+\midrule
+Baseline mean close & $1.00001$ & $0.99203$ & $0.0080$ & $0.99996$ & $0.99203$ & $0.0079$ \\
+Baseline std of close & $0.00075$ & $0.00090$ & $0.0001$ & $0.00094$ & $0.00090$ & $0.0001$ \\
+Baseline large-depeg freq & $0.000$ & $0.000$ & $0.000$ & $0.000$ & $0.000$ & $0.000$ \\
+Stress minimum close & $0.9022$ & $0.9750$ & $0.0728$ & $0.8918$ & $0.9750$ & $0.0832$ \\
+Stress mean abs depeg (bps) & $240.06$ & $240.98$ & $0.92$ & $218.58$ & $217.89$ & $0.69$ \\
+Stress large-depeg freq & $0.3958$ & $0.4633$ & $0.0675$ & $0.4167$ & $0.1867$ & $0.2300$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Boundary evaluation on USDT}\label{sub:oos}
+
+USDC and DAI are inside the calibration loss function as a joint pair. USDT, the third major fiat-backed stablecoin and the largest by market capitalisation in 2026, is held outside the loss and used as a boundary check. We re-estimate the asset-specific stress mean $\theta_{\text{stress}}^{\text{USDT}}$ and the asset-specific baseline and stress precisions $(\tau_{\text{baseline}}^{\text{USDT}}, \tau_{\text{stress}}^{\text{USDT}})$ for USDT while holding the shared block $\{\sigma_{\text{retail}}, \sigma_{\text{cross-border}}, \psi, \nu, \mu_q, \zeta\}$ at the joint USDC-DAI values. Table~\ref{tab:usdt_boundary} reports the resulting moment fit.
+
+\begin{table}[h]
+\centering
+\caption{Boundary evaluation on USDT. The shared structural block is held at the joint USDC-DAI calibrated values; only the USDT-specific regime parameters are re-estimated. USDT does not admit a clean fit at the joint block: the optimiser pushes the stress mean and the stress precision against the parameter bounds as it attempts to reproduce USDT's par-stable trajectory through the March 2023 window. The pattern is consistent with the structural difference in primary-market arbitrage between USDT and USDC-DAI documented by \citet{ma_zeng_zhang_2025}. Baseline window: 2022 calendar year. Stress window: 10-13 March 2023.}
+\label{tab:usdt_boundary}
+\begin{tabular}{lrr}
+\toprule
+Moment & USDT data & USDT model \\
+\midrule
+Baseline mean close & $0.9999$ & $0.9921$ \\
+Baseline std close (bps) & $9.2$ & $0.0$ \\
+Stress minimum close & $0.9998$ & $0.9750$ \\
+Stress mean absolute depeg (bps) & $52.9$ & $126.8$ \\
+Stress large-depeg frequency & $0.000$ & $0.107$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+USDT does not admit a clean fit at the joint structural block. The optimiser pushes the stress mean and the stress precision against the parameter bounds while trying to reproduce USDT's par-stable trajectory through the March 2023 window. USDT was par-stable in the data, and the shared block cannot produce a no-stress regime: any draw of $\theta$ that admits non-trivial conversion demand produces a secondary-market move through the calibrated $\psi$ and $\nu$. The mismatch is informative as a boundary statement on the model. The framework transports across stablecoins whose primary-market structure resembles USDC's open arbitrage (DAI fits inside the calibration loss; the joint loss reaches $4.01$), and it does not transport to stablecoins with concentrated arbitrage authority. \citet{ma_zeng_zhang_2025} document the structural difference: USDT averages six authorised redeemers per month while USDC averages five hundred and twenty-one. Replacing the shared structural block with a USDT-specific block would require introducing an arbitrage-concentration channel that the present specification does not include, and we leave this extension for future work.
+
+\subsection{Falsification on TerraUSD}\label{sub:falsification}
+
+Figure~\ref{fig:terra_falsification} reports the realised UST hourly close from 1 to 25 May 2022 alongside the trajectory implied by the calibrated model with the issuer reserve set to zero. The realised series falls from $0.9994$ on 6 May to $0.7569$ on 9 May and collapses to $0.068$ by the end of the window. The model trajectory remains between $0.880$ and $0.992$ throughout, with a final value of $0.986$. The two trajectories diverge by $92$ percentage points at the close of the window.
+
+The divergence is the desired result. The model is specified for fiat-backed stablecoins with an explicit reserve and treats the latent fundamental $\theta$ as exogenous to the trading outcomes. TerraUSD's collapse was driven by a recursive feedback in which the price of the paired token LUNA fell with the demand for UST itself, which is precisely the mechanism the present fixed point does not represent. Applying the model to UST without modification therefore correctly fails to track the realised trajectory. The figure provides a useful boundary statement on the model's domain of applicability: the framework describes fiat-backed stablecoins with reserves, not algorithmic stablecoins whose backing depends on a paired token's market price.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig_terra_falsification.pdf}
+\caption{TerraUSD falsification. Solid red line: realised UST close prices in dollars at hourly frequency from 1 May 2022 to 25 May 2022 (source: CryptoCompare). Dashed blue line: trajectory implied by the calibrated model at $\boldsymbol{\phi}^\star$ with the issuer reserve forced to zero, simulated over the same window using a random walk on $\theta$ in the stress regime. The realised series collapses to roughly five cents per UST by the end of the window, while the model with zero reserves cannot fall below the lower bound implied by its secondary-market block and remains within thirteen percentage points of par.}
+\label{fig:terra_falsification}
+\end{figure}
+
+\subsection{Comparative statics}\label{sub:comparative_statics}
+
+Three comparative statics emerge from the calibrated model and are useful for the cost-benefit analysis in Section~\ref{sec:cost_benefit}. First, the aggregate redemption mass $D$ is monotone decreasing in $\theta$, as is standard in the global-games literature. Second, tighter primary reserves dampen aggregate demand at the margin because the anticipated secondary discount makes redemption less attractive: in the baseline reserve calibration a reduction in $R$ from $1.0$ to $0.2$ lowers the realised $D$ from $0.487$ to $0.426$ at fundamental $\theta = 1.0$. Third, the cross-border class is the most redemption-sensitive end-user cohort at every Monte Carlo draw, in line with its calibrated signal noise $\sigma_{\text{cross-border}} = 0.218$ (the largest among the end-user classes). These three behaviours are tested by the unit suite that accompanies the simulation package.

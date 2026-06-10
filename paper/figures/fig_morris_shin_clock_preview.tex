@@ -1,0 +1,123 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+
+\definecolor{riskpurple}{HTML}{e1cfe5}
+\definecolor{infoblue}{HTML}{cce0f0}
+\definecolor{stratorange}{HTML}{f8d7a9}
+\definecolor{aggred}{HTML}{f4c4bb}
+\definecolor{eqgreen}{HTML}{cce6cc}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  font=\small,
+  every node/.style={align=center},
+  riskbox/.style={rectangle, rounded corners=3pt, draw, fill=riskpurple,
+                  minimum width=5.8cm, minimum height=1.7cm, inner sep=6pt},
+  infobox/.style={rectangle, rounded corners=3pt, draw, fill=infoblue,
+                  minimum width=13.0cm, minimum height=2.1cm, inner sep=7pt},
+  bestbox/.style={rectangle, rounded corners=3pt, draw, fill=stratorange,
+                  minimum width=5.6cm, minimum height=3.0cm, inner sep=6pt},
+  aggbox/.style={rectangle, rounded corners=3pt, draw, fill=aggred,
+                 minimum width=5.6cm, minimum height=3.0cm, inner sep=6pt},
+  fpbox/.style={rectangle, rounded corners=3pt, draw=black, line width=1pt,
+                fill=eqgreen, minimum width=13.0cm, minimum height=2.2cm, inner sep=7pt},
+  looplab/.style={font=\scriptsize\itshape, fill=white, inner sep=2pt},
+  bridgenote/.style={align=center, font=\footnotesize\bfseries},
+  >=Latex
+]
+
+% Layer 0: two coupled risks (matched layout with the strategic loop below)
+\node[riskbox] (cprisk) at (-5.0, 9.5) {%
+  \textbf{Counterparty risk}\\[2pt]
+  Issuer reserve quality and\\
+  ability to honour redemption at par.
+};
+
+\node[riskbox] (dprisk) at (5.0, 9.5) {%
+  \textbf{Depeg risk}\\[2pt]
+  Market price slips below the peg\\
+  under aggregate selling pressure.
+};
+
+% Reinforcement loop, routed outside the box gap (mirrors strategic loop below)
+\draw[->, line width=1.1pt, gray!70!black]
+  (cprisk.north east) to[bend left=22]
+  node[looplab, midway, above=1pt] {issuer stress fuels depeg pressure}
+  (dprisk.north west);
+
+\draw[->, line width=1.1pt, gray!70!black]
+  (dprisk.south west) to[bend left=22]
+  node[looplab, midway, below=1pt] {depeg raises perceived issuer risk}
+  (cprisk.south east);
+
+% Bridge note connecting risks to the coordination game
+\node[bridgenote] (subhead) at (0, 6.9) {%
+  Both risks are pinned down by the same coordination game:\\
+  whether holders redeem at the same time.
+};
+
+% Layer 1: information
+\node[infobox] (info) at (0, 5.0) {%
+  \textbf{Information.}\quad Public fundamental
+  $\theta \sim \mathcal{N}(\mu,\,1/\tau)$ is common to all holders\\
+  (joint stablecoin health: reserve quality $\times$ peg pressure).\\[2pt]
+  Each holder $i$ observes a noisy private signal\;\;
+  $s_i = \theta + \sigma\,\varepsilon_i,\quad \varepsilon_i \sim \mathcal{N}(0,1)$ idiosyncratic.\\[1pt]
+  \scriptsize Same underlying $\theta$; heterogeneous signals across holders.
+};
+
+\draw[->, line width=0.8pt] (subhead.south) -- (info.north);
+
+% Layer 2: strategic boxes (wide horizontal separation to avoid label overlap)
+\node[bestbox] (best) at (-5.0, 0.7) {%
+  \textbf{Individual redemption decision}\\[3pt]
+  Threshold rule:\\
+  redeem iff $s_i \le s^{*}$.\\[3pt]
+  Optimal $s^{*}$ for holder $i$\\
+  depends on the aggregate run\\
+  she expects from the rest.
+};
+
+\node[aggbox] (agg) at (5.0, 0.7) {%
+  \textbf{Stablecoin run / aggregate depeg}\\[3pt]
+  $D(\theta;\,s^{*}) = \Pr\{s_i \le s^{*} \mid \theta\}$.\\[3pt]
+  Mass of holders redeeming jointly\\
+  pushes the peg under stress and feeds\\
+  back into perceived counterparty risk.
+};
+
+% Information arrows: info -> strategic boxes
+\draw[->, line width=0.9pt]
+  ([xshift=-5cm] info.south) -- (best.north);
+\draw[->, line width=0.9pt]
+  ([xshift=5cm] info.south) -- (agg.north);
+
+% Strategic loop, routed OUTSIDE the box gap
+\draw[->, line width=1.1pt, gray!70!black]
+  (best.north east) to[bend left=22]
+  node[looplab, midway, above=1pt] {threshold $s^{*}$ used by all}
+  (agg.north west);
+
+\draw[->, line width=1.1pt, gray!70!black]
+  (agg.south west) to[bend left=22]
+  node[looplab, midway, below=1pt] {expected aggregate shapes $B(\cdot)$}
+  (best.south east);
+
+% Layer 3: fixed-point closure
+\node[fpbox] (fp) at (0, -4.0) {%
+  \textbf{Equilibrium $=$ fixed point.}\quad
+  Each holder picks a signal threshold $s^{*}$ assuming everyone else (and herself)\\
+  will choose whether to redeem at the same $s^{*}$, knowing each sees a different private signal.\\
+  Solution: unique $s^{*}$ such that $B(s^{*}) = s^{*}$.
+};
+
+\draw[->, line width=0.9pt] (best.south) -- (best.south |- fp.north);
+\draw[->, line width=0.9pt] (agg.south)  -- (agg.south  |- fp.north);
+
+\end{tikzpicture}
+
+\end{document}

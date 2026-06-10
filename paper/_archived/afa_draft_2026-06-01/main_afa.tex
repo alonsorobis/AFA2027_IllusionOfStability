@@ -1,0 +1,69 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+\usepackage{xcolor}
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black
+]{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\title{The Illusion of Stability in Stablecoins}
+\author{
+Andres Alonso-Robisco\thanks{IE University and Banco de Espa\~na.
+Corresponding author: \texttt{andresa@faculty.ie.edu}.
+The views expressed in this paper are the sole responsibility of the
+author and do not necessarily reflect those of Banco de Espa\~na or
+the Eurosystem.}
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+\onehalfspacing
+
+\begin{abstract}
+Fiat-backed stablecoins promise par convertibility into the dollar, yet the promise sometimes briefly fails. We build a microstructure model of holders' coordinated choice between converting at the issuer and selling on an exchange, formulated as a Morris-Shin coordination game with heterogeneous user types and solved endogenously, and calibrate it to the March 2023 USDC episode in hourly data. We establish three structural results. The calibrated model transports cleanly to DAI but does not transport to USDT, identifying its own boundary at the type of primary-market arbitrage that distinguishes the two issuers. Tighter issuer reserves reduce aggregate conversion pressure at the fixed point because the anticipated discount on the exchange dampens individual incentives to convert. A higher payment-use value of the stablecoin lowers the equilibrium conversion mass. We apply the calibrated model to a per-corridor cost comparison against established payment services for three named corridors and to the November 2025 Banco Central do Brasil package that places virtual assets within the foreign-exchange framework, and we describe how the static metric extends into a dynamic analysis of adoption.
+\end{abstract}
+
+\noindent\textbf{Keywords:} stablecoins; payment instruments; global games; cross-border payments; calibration.
+
+\noindent\textbf{JEL Codes:} C63; E42; E58; G21.
+
+\clearpage
+
+\input{sections/01_introduction.tex}
+\input{sections/02_literature.tex}
+\input{sections/03_model.tex}
+\input{sections/04_data_calibration.tex}
+\input{sections/05_results.tex}
+\input{sections/06_cost_benefit.tex}
+\input{sections/07_discussion.tex}
+\input{sections/08_conclusion.tex}
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\clearpage
+\appendix
+\input{sections/A1_ai_workflow.tex}
+\input{sections/A2_sensitivity.tex}
+\input{sections/A3_proofs.tex}
+
+\end{document}

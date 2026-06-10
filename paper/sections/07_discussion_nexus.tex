@@ -1,0 +1,38 @@
+\section{Policy implications}\label{sec:discussion}
+
+The corridor comparison and the per-issuer decomposition carry two readings for a central bank weighing its payment infrastructure: that the stablecoin category is too coarse to supervise with a single rule, and that the competitive position the stablecoin enjoys today is conditional on the absence of an upgraded public cross-border rail.
+
+\subsection{Stablecoins are not a homogeneous asset class}\label{sub:not_homogeneous}\label{sub:policy_implications}
+
+The two premiums differ not only in level (49 basis points for USDC, 71 for USDT) but, more consequentially, in composition. USDC's premium is depeg-dominant (54\% baseline depeg, 41\% counterparty); USDT's is counterparty-dominant (84\% counterparty, 15\% baseline depeg). The same coordination machinery, applied to two issuers with structurally different reserves and secondary venues, returns inverted risk profiles, and the structural primitives that produce them (reserve composition and attestation on the counterparty side, secondary-market depth and signal noise on the depeg side, Section~\ref{sec:risk_factors}) are exactly the dimensions a tailored supervisory framework would address.
+
+The inverted compositions matter for policy because a regulatory framework calibrated to one stablecoin will misprice the other. A USDC-shaped regime concerned about secondary-market depth and resilience would under-supervise USDT, where the binding constraint is reserve composition and attestation. A USDT-shaped regime concerned about issuer counterparty risk would under-supervise USDC, where the binding constraint is secondary-market liquidity at the moment convertibility is questioned. The category-level headline (dominated, wins today, absorbed by an upgraded public rail) is robust to the distinction; the supervisory implication is that the category is too coarse to be the unit of regulation, and that regulatory uncertainty moves the structural premium only transitorily: Appendix~\ref{sub:regulatory_uncertainty_band} reports an episode-conditional band in which the USDC headline widens to 61 to 73 basis points and the USDT headline to 86 to 117 under an adverse regulatory regime, none of whose bounds flips the use-case rankings.
+
+A prudential framework that takes this seriously is already available. \citet{goel_lewrick_agarwal_2026} model two instruments for stablecoin issuers, a liquidity-ratio and a capital-ratio threshold, and map them onto a micro-prudential default-probability target and a macro-prudential price-impact target. Our decomposition supplies the input that makes such a framework issuer-specific rather than category-wide: because the USDC premium is depeg-dominant and the USDT premium counterparty-dominant, the efficient mix tilts toward the liquidity and secondary-depth instrument for the former and toward the capital and reserve-quality instrument for the latter. The two-way mapping between regulatory thresholds and policy targets is therefore one the regulator should calibrate per issuer, exactly along the structural primitives that separate the two coins.
+
+\subsection{Comparison with an upgraded public rail: BIS Nexus}\label{sub:public_trajectory}
+
+Result~\ref{res:absorbed} flagged the one configuration the use cases of Section~\ref{sec:empirical_comparison} do not contain: a corridor on which an upgraded public cross-border rail exists. We substantiate it here by adding such a rail to the two cross-border corridors. The relevant comparator for retail payments is an interlinkage of domestic instant-payment systems, of which BIS Project Nexus is the leading instance; wholesale tokenisation initiatives such as the BIS Agor\'a project target interbank settlement rather than the retail flows we price, and lie outside the comparison.
+
+BIS Project Nexus completed its phase-three blueprint in July 2024 and targets live operations by mid-2027 \citep{bis_nexus_2024}. It connects the domestic instant-payment systems of its participating jurisdictions through a standardised multilateral protocol. We model Nexus as a flat USD 0.20 per transaction, matched to the upper bound of the SEPA Instant Credit Transfer pricing under Regulation (EU) 2024/886, which translates into 5 basis points at USD 400 and 2 at USD 1{,}000. Table~\ref{tab:nexus_cross_border} adds it to the cross-border use-case totals.
+
+\begin{table}[H]
+\centering
+\caption{Cross-border corridors with a projected Nexus rail added. Total cost in basis points; the non-Nexus rows reproduce the use-case totals of Tables~\ref{tab:uc2} and~\ref{tab:uc3}. The stablecoin row uses the realistic choice on each corridor (USDT on US-Mexico, USDC on EU-Brazil).}\label{tab:nexus_cross_border}
+\begin{tabular}{lrr}
+\toprule
+Rail & US-Mexico (USD 400) & EU-Brazil (USD 1{,}000) \\
+\midrule
+BIS Nexus (projected) & 5.0   & 2.0   \\
+Stablecoin            & 120.7 & 84.9  \\
+Wise (fintech)        & 251.2 & 205.2 \\
+SWIFT correspondent   & 333.5 & 489.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On both corridors the projected Nexus rail dominates the stablecoin by roughly two orders of magnitude: 5.0 against 120.7 basis points on US-Mexico, and 2.0 against 84.9 on EU-Brazil. The advantage the stablecoin enjoyed against the incumbent and the fintech-upgraded alternative is absorbed by the upgraded public cross-border rail.\footnote{Neither corridor is a Nexus participating corridor today, so these are corridor-level projections; live operations begin no earlier than mid-2027 and the launch fee may differ from the flat USD 0.20 assumed here. The qualitative dominance is robust; the precise basis-point margins are not.} The structural logic transfers to any jurisdiction pair that connects its domestic instant-payment system to such an interlinkage protocol.
+
+Two implications follow. First, where it wins, the stablecoin might be seen as a complementary payment instrument filling an infrastructure gap rather than as a frontier technology alone. An interlinked public instant-payment system delivers the same low-cost cross-border settlement without a counterparty or depeg premium attached, so the build-versus-license decision is the first-order one: a jurisdiction that connects its domestic rail to an interlinkage protocol reduces the demand for the stablecoin alternative on its corridors at a net-cost differential of two orders of magnitude. The market share that stablecoins accumulate on corridors without such a rail is, in this sense, a substitute for cross-border infrastructure that has not yet been built.
+
+Second, the risk premium is a structural cost rather than an operational one: it depends on the issuer's reserve composition, the depth of the secondary market, and the signal noise of the holder base, and no operational improvement (faster bridges, lower gas fees, better wallets) reduces it. A forward projection of stablecoin economics that omits a structural risk loading will understate the holder's true cost, and the reading the comparison supports is that stablecoins substitute for upgraded public infrastructure while it is absent rather than surpassing it.

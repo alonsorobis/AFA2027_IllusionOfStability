@@ -1,0 +1,57 @@
+\section{Data and calibration framework}\label{sec:data_calibration}
+
+This section describes the data, the moments used in the calibration anchor, the identification map for the twelve-dimensional parameter vector, and the falsification and out-of-sample exercises.
+
+\subsection{Data sources and assembly}\label{sub:data}
+
+The primary calibration anchor uses hourly secondary-market price data for USDC, USDT and DAI against the US dollar. The USDC series is taken from CryptoCompare, matching the data lineage of \citet{ahmed_aldasoro_duley_2025} and covering the period 2022-01-01 to 2026-05-31 at hourly frequency. We use the same source for USDT and DAI as cross-checks. As an independent cross-check we also obtain hourly USDT-USD and DAI-USD candles from Coinbase Advanced Trade through their public REST endpoint. Issuer supply by chain is taken from the DefiLlama stablecoins endpoint and is used as a proxy for net primary redemptions and issuances. Macro controls come from the FRED CSV mirror. Cross-border corridor fees come from the World Bank Remittance Prices Worldwide quarterly dataset, restricted to 2023Q1-2024Q4. The Banco Central do Brasil package of November 2025 is documented through the institution's primary materials, supplemented by the SGS series 27688 (cross-border position) accessed through the BCB public API.
+
+The full data manifest, with timestamps, source URLs and SHA-256 hashes, is recorded as part of the project log and is provided as supplementary material to the submission. Each download was performed inside the project window and is reproducible from the included scripts.
+
+\subsection{The March 2023 calibration anchor}\label{sub:anchor}
+
+We define the baseline regime as the calendar year 2022 (8,760 hourly observations) and the stress regime as the four-day window from 10 to 13 March 2023 inclusive (96 hourly observations). The choice of windows isolates the SVB-USDC episode while keeping the baseline window free of stress events. Six moments computed from the CryptoCompare hourly series are used as calibration targets, three per regime: the mean of the close, the standard deviation of the close, and the large-depeg frequency under threshold $\bar{p} = 0.975$. Table~\ref{tab:targets} reports the target values.
+
+\begin{table}[h]
+\centering
+\caption{USDC March 2023 calibration targets. Baseline window: 2022-01-01 to 2022-12-31 (8,760 hourly observations). Stress window: 2023-03-10 to 2023-03-13 (96 hourly observations). Large-depeg frequency uses threshold $\bar{p} = 0.975$.}
+\label{tab:targets}
+\begin{tabular}{lr}
+\toprule
+Moment & Value \\
+\midrule
+Baseline mean close & $1.000014$ \\
+Baseline standard deviation of close & $0.000754$ \\
+Baseline large-depeg frequency & $0.000$ \\
+Stress minimum close & $0.9022$ \\
+Stress mean absolute depeg (bps) & $240.06$ \\
+Stress large-depeg frequency & $0.396$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The stress window contains the SVB-USDC depeg whose minimum (0.9022) is reached on 2023-03-11 at 07:00 UTC. The baseline window contains no observations below 0.99, which constrains the baseline regime to be quasi-deterministic in the calibrated model.
+
+\subsection{The ten-parameter vector and its identification}\label{sub:identification}
+
+The calibration vector $\boldsymbol{\phi} \in \mathbb{R}^{10}$ stacks two type-specific signal noise parameters $(\sigma_{\text{retail}}, \sigma_{\text{cross-border}})$, four secondary-market parameters $(\psi, \nu, \mu_q, \zeta)$, two regime precisions $(\tau_{\text{baseline}}, \tau_{\text{stress}})$ and two asset-specific stress-regime means $(\theta_{\text{stress}}^{\text{USDC}}, \theta_{\text{stress}}^{\text{DAI}})$. The remaining model parameters (population shares $\pi_k$, per-capita balances $B_k$, issuer balance-sheet quantities, the redemption fee, the convenience yield levels, the rail queue, the floor on the secondary price) are held fixed at the values that define the scenario. Three parameters that earlier versions of the model carried as free are now fixed externally: the market-maker and wholesale type signal noises and the baseline regime mean. We discuss the fixed values below.
+
+The identification of $\boldsymbol{\phi}$ rests on a clean mapping between moments and parameters. The mean of $p^{sec}$ in each regime identifies the corresponding $\theta$-mean, given that $p^{sec}$ at $\theta$ is monotone increasing in $\theta$ in the relevant range. The dispersion of $p^{sec}$ in each regime identifies the corresponding $\tau$, given that lower $\tau$ widens the cross-section of $\theta$ draws and therefore the cross-section of $p^{sec}$ realisations. The shape parameters $(\psi, \nu)$ are identified by the tail of the stress cross-section: a higher $\nu$ deepens the minimum without inflating the average, and a higher $\psi$ deepens both. The depth erosion parameter $\zeta$ separates from $\psi$ through the asymmetry between the average and the tail of the stress regime. The congestion penalty $\mu_q$ is held at a calibrated reference value because the rail queue $q_k$ enters the model parametrically.
+
+Three parameters are fixed externally on economic grounds and not estimated. The signal noise of the market-maker class is set to $\sigma_{\text{market-maker}} = 0.05$, reflecting the well-documented information advantage of authorised arbitrageurs over the reserve quality of the issuer. The signal noise of the wholesale class is set to $\sigma_{\text{wholesale}} = 0.10$, reflecting the institutional information available to large-value end users. The baseline regime mean of the latent fundamental is set to $\theta_{\text{baseline}} = 1.0$ by definition: the baseline regime is the par-convertibility state and we anchor it numerically rather than estimate it. The remaining ten parameters are calibrated jointly to twelve price moments, six per stablecoin (USDC and DAI). The two assets share the four secondary-block parameters, the two type-specific signal noises $\sigma_{\text{retail}}$ and $\sigma_{\text{cross-border}}$ and the two regime precisions. Only the stress-regime mean $\theta_{\text{stress}}$ is asset-specific. The system is over-identified at a ratio of 1.2.
+
+We confirm the identification map empirically by computing the Jacobian of the twelve model moments with respect to the ten parameters at the joint $\boldsymbol{\phi}^\star$ and decomposing it through a singular value decomposition. The four secondary-block parameters $\{\psi, \nu, \mu_q, \zeta\}$ are strongly identified, with per-parameter sensitivity strengths between $44$ and $73$ on a normalised scale. The two type-specific signal noises $\{\sigma_{\text{retail}}, \sigma_{\text{cross-border}}\}$ are well identified, with strengths $2.6$ and $7.2$. The two asset-specific stress means and the stress-regime precision are well identified, with strengths between $1.1$ and $5.5$. The baseline-regime precision $\tau_{\text{baseline}}$ remains marginally identified, with strength $0.35$, because the baseline regime is structurally quasi-deterministic at any value of $\tau_{\text{baseline}}$ above a threshold. Nine of the ten free parameters are therefore well identified by their dominant moments, with the remaining marginal identification confined to the baseline precision, which is an artefact of the regime-dependent dispersion device rather than of the moment-parameter mapping.
+
+\subsection{Optimisation}\label{sub:optimisation}
+
+The calibration solves
+\begin{equation}\label{eq:loss}
+\min_{\boldsymbol{\phi}} \, \mathcal{L}(\boldsymbol{\phi}) = \sum_{a \in \{\text{USDC}, \text{DAI}\}} \sum_{m=1}^{6} w_m \left(\hat{m}_a(\boldsymbol{\phi}) - m_a^{\text{target}}\right)^2,
+\end{equation}
+where $\hat{m}_a(\boldsymbol{\phi})$ are model-implied moments for asset $a$ and $w_m$ are weights tuned so that the stress moments measured in basis points do not dominate the smaller baseline moments. The minimisation uses Nelder-Mead with bound clipping. We use a two-pass procedure: a warm-up pass with $N=100$ Monte Carlo draws to locate the basin, followed by a main pass with $N=300$ draws starting from the warm-up optimum. The two passes together take approximately $111$ minutes at the optimised solver speed.
+
+\subsection{Boundary evaluation and falsification}\label{sub:oos_falsification}
+
+The joint calibration carries USDC and DAI together inside the loss function. The third major fiat-backed stablecoin, USDT, is held outside the calibration. We use it as a boundary check on the model's structural domain. USDT was par-stable throughout the March 2023 window; the structural parameters that fit USDC and DAI simultaneously cannot reproduce a par-stable trajectory in stress under the open-arbitrage assumption. The diagnostic is therefore informative as a domain statement: the framework describes stablecoins with open primary-market arbitrage and reserve-backed conversion, and it does not describe stablecoins with concentrated arbitrage access, as USDT's six authorised redeemers per month (\citealp{ma_zeng_zhang_2025}) place it outside the model's structural envelope.
+
+We also apply the calibrated model to the May 2022 TerraUSD collapse as a falsification target. TerraUSD lacked the reserve structure on which the fixed point in this paper is built, so the model is expected to mismatch its trajectory. A successful match without modification would be a red flag for the model's specification. We report the gap between the model-implied trajectory and the realised UST series as a diagnostic.

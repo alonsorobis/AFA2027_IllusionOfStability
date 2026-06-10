@@ -1,0 +1,82 @@
+\section{A global game of stablecoin redemption}\label{sec:model}
+
+This section formalises the depeg channel of Section~\ref{sec:risk_factors} as a global game and states the equilibrium properties the calibration relies on. We use a one-class representative-holder specification; the multi-class generalisation collapses to it when the population concentrates on a single class, and a two-class robustness extension is reported in the internet appendix. Proofs and the numerical solver are in Appendix~\ref{app:proofs}.
+
+\subsection{Primitives and information}\label{sub:model_primitives}
+
+There is a continuum of homogeneous holders of unit mass. The latent issuer fundamental is $\theta \in \mathbb{R}$, drawn from a normal prior $\mathcal{N}(\mu_\theta, 1/\tau)$ with regime-dependent mean and precision; the regime $\rho \in \{b, s\}$ is drawn from a Bernoulli with $\mathbb{P}(\rho=s) = p_s$. In the baseline regime $\mu_\theta = \mu_b$ and $\tau = \tau_b$, fixed at $\mu_b = 1$ and $\tau_b = 400$ so the baseline is quasi-deterministic at par; the stress-regime $\mu_s, \tau_s$ are estimated. Each holder $i$ observes a private signal
+\begin{equation}\label{eq:signal}
+s_i = \theta + \sigma \varepsilon_i, \qquad \varepsilon_i \sim \mathcal{N}(0,1),
+\end{equation}
+with $\sigma > 0$ the signal noise, so the posterior is $\theta \mid s_i \sim \mathcal{N}(s_i, \sigma^2)$ \citep{morris_shin_1998}. The issuer holds primary reserves $R$ and asset value $A$, with default hazard $h \in [0,1]$ and loss given default $\xi \in [0,1]$. The secondary market has baseline depth $M$, price-impact scale $\psi > 0$, convexity $\nu > 1$, congestion penalty $\mu_q$, and depth-erosion $\zeta$. The per-redemption transaction cost is $\phi$ and the convenience yield of holding the coin is $\omega$.
+
+\subsection{Redemption and the secondary price}\label{sub:model_secondary}
+
+Each holder chooses to redeem or hold. By symmetry and the monotone-likelihood-ratio property of the signal, the equilibrium is in threshold strategies, redeem if and only if $s_i < s^*$, so the mass that redeems at fundamental $\theta$ is
+\begin{equation}\label{eq:D}
+D(\theta; s^*) = \Phi\!\left(\frac{s^* - \theta}{\sigma}\right),
+\end{equation}
+with $\Phi$ the standard normal CDF. Redemption runs through two channels. Each holder first attempts primary redemption at the issuer, paid at par up to liquid reserves $R$; the unmet demand spills into the secondary market,
+\begin{equation}\label{eq:U}
+U(D) = \max\{D-R, 0\},
+\end{equation}
+which clears at
+\begin{equation}\label{eq:psec}
+p^{sec}(D) = \min\!\left\{1, \, \max\!\left[\underline{p}, \, 1 - \psi\!\left(\frac{U(D)}{\widetilde M(D)}\right)^\nu - \mu_q q\right]\right\}, \qquad
+\widetilde M(D) = \frac{M}{1 + \zeta\, U(D)/M},
+\end{equation}
+where $\widetilde M(D)$ is the depth that itself erodes as unmet demand grows, $\underline p$ a price floor, and $q$ the rail queue ratio (zero in the specification used here). The price falls convexly ($\nu>1$) in unmet redemption relative to depth, the feature the mechanism check of Section~\ref{sub:mechanism_check} tests.
+
+\subsection{Payoffs and equilibrium}\label{sub:model_equilibrium}
+
+Conditional on $\theta$ and the aggregate $D$, the payoff to redeeming is
+\begin{equation}\label{eq:VR}
+V_R(D) = \min\!\left\{1, \tfrac{R}{D}\right\} + \left(1 - \min\!\left\{1, \tfrac{R}{D}\right\}\right) p^{sec}(D) - \phi,
+\end{equation}
+par on the share met from reserves and the depressed secondary price on the rest, and the payoff to holding is
+\begin{equation}\label{eq:VH}
+V_H(\theta) = \theta - c_q q + \omega - \xi h.
+\end{equation}
+The issuer counterparty loss $\xi h$ enters the value of \emph{holding}, not the realised price. This placement is the substantive modelling choice: a counterparty loss netted from the realised price would be common to redeeming and holding and would cancel in the indifference condition below, leaving the threshold unmoved. In $V_H$ it lowers the value of holding, raises the conversion mass, and feeds the coordination channel, so a heavier counterparty profile both adds a loss component and tightens the run incentive; at the calibrated parameters this second, coupling effect is second-order relative to the additive component (Section~\ref{sec:identification}). The marginal holder at $s_i = s^*$ is indifferent in expectation over $\theta$ given the posterior $\mathcal{N}(s^*, \sigma^2)$:
+\begin{equation}\label{eq:F}
+F(s^*) := \mathbb{E}_{\theta \mid s_i = s^*}\!\left[V_R(D(\theta; s^*)) - V_H(\theta)\right] = 0.
+\end{equation}
+This is the endogenous fixed point. The threshold $s^*$ enters $F$ both as the conditioning event of the posterior and through the aggregate mass $D(\theta; s^*)$ that all holders applying the same threshold imply; the two-way dependence is the run, and it admits no closed form.
+
+\subsection{Existence, uniqueness, and comparative statics}\label{sub:model_propositions}
+
+Three propositions give the model the properties the calibration relies on; all are proved in Appendix~\ref{app:proofs}.
+
+\begin{proposition}[Existence and uniqueness]\label{prop:existence}
+Assume $\nu > 1$, $\sigma > 0$, $0 < R < 1$, $M>0$, and that the best-response operator $T$ on threshold profiles is a contraction in the sup norm. Then \eqref{eq:F} has a unique solution $s^* \in \mathbb{R}$.
+\end{proposition}
+
+The proposition gives a single equilibrium threshold $s^*$ at any admissible parameter vector, so the conversion mass $D^*(\theta)$ is determined at each fundamental and the calibration recovers one risk premium per issuer. The contraction condition is verified numerically at the calibrated parameters.
+
+\begin{proposition}[Reserve comparative static]\label{prop:reserves}
+At the equilibrium $s^*$, $\partial D^*/\partial R \geq 0$ in the strict interior of the parameter space.
+\end{proposition}
+
+A deeper liquid reserve sustains a higher secondary price at any conversion volume, which raises the value of converting and so weakly raises the equilibrium conversion mass. This is the reserve-quality channel of \citet{ma_zeng_zhang_2025}.
+
+\begin{proposition}[Convenience-yield comparative static]\label{prop:convenience}
+At the equilibrium $s^*$, $\partial D^*/\partial \omega < 0$ in the strict interior of the parameter space.
+\end{proposition}
+
+A higher payment-use convenience yield raises the value of holding and so lowers the equilibrium conversion mass: a more useful stablecoin retains holders even at marginally lower fundamentals. This is the adoption-fragility channel of \citet{bertsch_2025_adoption_fragility}.
+
+Together the two comparative statics formalise the claim of Section~\ref{sub:not_homogeneous} that reserve composition and payment use are primitives that move the priced premium, not stylistic differences between issuers.
+
+\subsection{The risk premium}\label{sub:what_it_delivers}
+
+The output of the model, for each issuer under its own calibration, is three expected per-unit losses in basis points,
+\begin{align}
+\ell_C &= h \cdot \xi \cdot 10^4,\label{eq:ellC} \\
+\ell_{D,b} &= \mathbb{E}_b\!\left[D(\theta; s^*)\,(1 - p^{sec}(D(\theta; s^*)))\right] \cdot 10^4,\label{eq:ellDb} \\
+\ell_{D,s} &= \mathbb{E}_s\!\left[D(\theta; s^*)\,(1 - p^{sec}(D(\theta; s^*)))\right] \cdot 10^4,\label{eq:ellDs}
+\end{align}
+where $\mathbb{E}_\rho$ is the expectation under regime $\rho$. The counterparty component $\ell_C$ is the reduced-form credit term of Section~\ref{sub:counterparty}, independent of the coordination stage; the two depeg components are the structural output of the global game. Their probability-weighted sum is the risk premium the holder bears,
+\begin{equation}\label{eq:total_risk_premium}
+\Pi_{\text{risk}} = \ell_C + (1-p_s)\,\ell_{D,b} + p_s\,\ell_{D,s},
+\end{equation}
+which we add to the on-chain transfer fee. Section~\ref{sec:calibration} calibrates this premium separately for the two stablecoins.

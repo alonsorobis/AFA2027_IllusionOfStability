@@ -1,0 +1,71 @@
+\section{Model}\label{sec:model}
+
+The model has four layers. Layer 1 is a payment-rail block that determines per-class congestion. Layer 2 is the issuer balance sheet. Layer 3 is the secondary market. Layer 4 is the strategic coordination stage in which the redemption thresholds are solved jointly with the realised secondary price and the realised payment-rail queue. A Monte Carlo draw fixes a scenario, draws the latent issuer fundamental from its prior, draws private signals, and resolves the layer-4 fixed point.
+
+\subsection{Agents and classes}\label{sub:agents}
+
+The economy has $K=4$ classes indexed by $k \in \mathcal{K} = \{\text{retail}, \text{wholesale}, \text{cross-border}, \text{market-maker}\}$. Within each class agents are atomistic and ex-ante identical. Class $k$ has population share $\pi_k$ and per-capita stablecoin balance $B_k$, with aggregate class stake $W_k = \pi_k B_k$ and total stake $W = \sum_k W_k$. The end-user payment classes (retail, wholesale, and cross-border) are each tied to one of the corridors used in the cost-benefit comparison in Section~\ref{sec:cost_benefit}. The market-maker class proxies the arbitrage and liquidity intermediation layer that absorbs unmet primary redemptions and bridges fragmented venues. It is not a payment user and does not enter the cost-benefit comparison.
+
+\subsection{Information}\label{sub:information}
+
+The latent issuer fundamental is $\theta \in \mathbb{R}$. Higher $\theta$ means the issuer can honour redemptions at par with higher probability. Agents share an improper uniform prior on $\theta$, as is standard in the global-games literature. Each agent $i$ in class $k$ observes a private signal
+\begin{equation}\label{eq:signal}
+s_i = \theta + \sigma_k \varepsilon_i, \qquad \varepsilon_i \sim \mathcal{N}(0,1).
+\end{equation}
+The class-specific signal noise $\sigma_k$ is the key informational lever. We expect the natural ordering $\sigma_{\text{market-maker}} < \sigma_{\text{wholesale}} < \sigma_{\text{retail}} < \sigma_{\text{cross-border}}$, with cross-border end users the least-informed cohort and market makers the best-informed. The fixed point solved below pins each class threshold $s^*_k$ as a function of $\sigma_k$, the issuer block, and the secondary-market block.
+
+\subsection{Strategies and the dual-channel exit}\label{sub:strategies}
+
+Each agent chooses between \textbf{redeem} and \textbf{hold}. The strategy is a class-specific threshold rule: redeem if and only if $s_i < s^*_k$. Conditional on $\theta$, class $k$ redeems with probability $\Phi\!\left((s^*_k - \theta)/\sigma_k\right)$, where $\Phi$ denotes the standard normal CDF. Aggregating across classes and stakes, the realised aggregate redemption mass at fundamental $\theta$ and threshold profile $\{s^*_k\}$ is
+\begin{equation}\label{eq:D}
+D(\theta; \{s^*_k\}) = \sum_{k=1}^K W_k \, \Phi\!\left(\frac{s^*_k - \theta}{\sigma_k}\right).
+\end{equation}
+
+Redemption proceeds through two channels. Every redeeming agent first attempts primary redemption at the issuer, which pays at par up to liquid reserves $R$. Letting $D = D(\theta; \{s^*_k\})$ for brevity, the primary payment is $P(D) = \min\{D, R\}$ and the unmet demand that spills into the secondary market is
+\begin{equation}\label{eq:U}
+U(D) = \max\{D - R, 0\}.
+\end{equation}
+
+The secondary market clears at price
+\begin{equation}\label{eq:psec}
+p^{sec}(D) = \min\!\left\{1, \, \max\!\left[\underline{p}, \, 1 - \psi \!\left(\frac{U(D)}{\widetilde{M}(D)}\right)^\nu - \mu_q q - \xi h\right]\right\},
+\end{equation}
+where $\nu > 1$ is the convexity of price impact, $\psi$ is the price-impact scale, $\mu_q$ is a congestion penalty, $q$ is the rail queue ratio, $\xi$ is the issuer-default markdown, $h$ is the issuer default hazard, and $\underline{p}$ is a floor on the secondary price. Depth erodes with unmet primary demand,
+\begin{equation}\label{eq:Mtilde}
+\widetilde{M}(D) = \frac{M}{1 + \zeta \, U(D)/M},
+\end{equation}
+where $M$ is baseline depth and $\zeta$ governs how fast depth erodes under stress. The convexity $\nu > 1$ captures the documented nonlinearity in secondary-price impact under sell pressure; we discipline it directly through calibration.
+
+\subsection{Per-agent payoffs}\label{sub:payoffs}
+
+The payoff to redeeming at fundamental $\theta$ given an aggregate redemption $D$ is
+\begin{equation}\label{eq:VR}
+V_R(D) = \underbrace{\min\!\left\{1, \frac{R}{D}\right\}}_{\text{primary share}} \cdot 1 \, + \, \underbrace{\left(1 - \min\!\left\{1, \frac{R}{D}\right\}\right)}_{\text{secondary share}} \cdot p^{sec}(D) \, - \, \phi,
+\end{equation}
+where $\phi$ is a per-redemption transaction cost. The payoff to holding is
+\begin{equation}\label{eq:VH}
+V_H(\theta) = \theta - c_q q + \omega,
+\end{equation}
+where $c_q$ is the per-class disutility of using a congested rail and $\omega$ is the per-class convenience yield of holding the stablecoin (programmability, integration with on-chain markets, 24/7 access). $V_R$ depends on $\theta$ only through the aggregate redemption $D$ that other agents generate; $V_H$ depends on $\theta$ directly. This payoff structure delivers the standard global-games complementarity: as more agents redeem, $D$ rises, $p^{sec}$ falls, $V_R$ falls, and the marginal agent prefers to hold. The complementarity comes from the secondary-market block rather than from a direct payoff externality.
+
+\subsection{The fixed point}\label{sub:fixedpoint}
+
+At the threshold $s^*_k$ the marginal class-$k$ agent is indifferent between redeeming and holding. The equilibrium condition is
+\begin{equation}\label{eq:fp}
+\mathbb{E}\!\left[V_R(D(\theta; \{s^*_j\})) - V_H(\theta) \mid s_i = s^*_k\right] = 0, \qquad k = 1, \dots, K.
+\end{equation}
+The expectation in \eqref{eq:fp} is taken over $\theta$ given the threshold signal. Under the improper-prior limit the posterior is $\theta \mid s_i = s^*_k \sim \mathcal{N}(s^*_k, \sigma_k^2)$, which closes the expectation up to a univariate integral that we evaluate by Gauss-Hermite quadrature.
+
+\begin{proposition}[Existence and uniqueness]\label{prop:existence}
+Under the model specification of this section with $\sigma_k > 0$ for each $k$, the system \eqref{eq:fp} admits a unique threshold profile $\{s^*_k\}$ provided the iterated best-response map is a contraction, which holds when the local slope of the secondary-price impact term is bounded relative to the unit slope of $V_H$ in $\theta$.
+\end{proposition}
+
+We prove Proposition~\ref{prop:existence} in Appendix~\ref{sec:proofs}, where we also verify the contraction condition at the calibrated parameter vector. The same appendix establishes two comparative statics that we use later in the paper. Proposition~\ref{prop:reserve} states that, at the fixed point, the aggregate redemption mass is non-decreasing in the issuer reserve $R$. Equivalently, tighter reserves reduce aggregate redemption pressure: when reserves are limited, the anticipated unmet demand spills to the secondary market and depresses the price that any redeeming agent expects, which makes redemption less attractive at the margin. The result formulates as a property of the $K$-class threshold profile the structural mechanism that \citet{ma_zeng_zhang_2025} document empirically in the cross-section of stablecoins between concentrated and competitive arbitrage venues. Proposition~\ref{prop:convenience} states that the aggregate redemption mass is strictly decreasing in the convenience yield $\omega$. Stablecoins with a higher value of in-use payment service are stabler at the redemption stage, which connects the model to the run-attenuation channel of \citet{bertsch_2025_adoption_fragility}.
+
+Operationally we solve \eqref{eq:fp} by Newton-Krylov from a class-specific scalar warm start derived from the reserve ratio, rail congestion, and convenience yield. The simulation reports convergence diagnostics directly per Monte Carlo draw.
+
+\subsection{Regime-dependent dispersion of the fundamental}\label{sub:regime}
+
+The marginal distribution of $\theta$ across Monte Carlo draws shapes the cross-section of $p^{sec}$ realisations that the model is asked to match in the calibration. We allow this dispersion to depend on the regime. In the baseline regime the prior on $\theta$ has high precision $\tau_{\text{baseline}}$ and is concentrated tightly around its mean $\theta_{\text{baseline}}$, so secondary-market prices are quasi-deterministic across draws. In the stress regime the prior has low precision $\tau_{\text{stress}}$ and is spread widely around its mean $\theta_{\text{stress}}$, which delivers the fat-tailed cross-section seen in stressed data without requiring any change in the microstructure block. The microstructure block $\{\sigma_k, \psi, \nu, \mu_q, \zeta\}$ is shared across regimes; only the prior of $\theta$ shifts.
+
+This device serves two purposes. First, it gives a clean structural interpretation of the distinction between calm and stressed states: a regime is fully described by the location and the dispersion of the prior on the latent fundamental. Second, it disciplines identification. The calibration vector splits into a microstructure block that is identified by the shape of the stress tail in the cross-section, two regime means that are identified by the mean of $p^{sec}$ in each regime, and two regime precisions that are identified by the dispersion of $p^{sec}$ in each regime. We return to this identification map in Section~\ref{sec:data_calibration}.

@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit}
+\usepackage{xcolor}
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black
+]{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{result}{Result}
+
+\title{The Risk-Adjusted Cost of Stablecoins as Payment Instruments}
+\author{
+Andres Alonso-Robisco\thanks{Banco de Espa\~na.
+Corresponding author: \texttt{andres.alonso@bde.es}.
+The views expressed in this paper are the sole responsibility of the
+author and do not necessarily reflect those of Banco de Espa\~na or
+the Eurosystem.}
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+\doublespacing
+
+\vspace{0.5em}
+\begin{abstract}
+\noindent Sending a fiat-backed stablecoin costs a fraction of a correspondent-banking payment, but the fee understates the cost the sender bears: the holder is exposed to issuer counterparty risk and to secondary-market price dispersion when par convertibility breaks. We price both with a global game calibrated separately to the March 2023 USDC and May 2022 USDT episodes, obtaining premiums of 49 and 71 basis points with inverted compositions. Across retail corridors, the stablecoin path is dominated where a public instant-payment rail already exists, wins where none does, and is absorbed once an upgraded public cross-border rail goes live.
+\end{abstract}
+
+\vspace{2em}
+
+\noindent\textbf{Keywords:} stablecoins; retail payments; global games; cross-border payments; risk-adjusted cost.
+
+\medskip
+\noindent\textbf{JEL Codes:} C63; E42; G21; G23; G28.
+
+\clearpage
+
+\input{sections/01_introduction.tex}
+\input{sections/02_related_literature.tex}
+\input{sections/03_risk_factors.tex}
+\input{sections/04_the_model.tex}
+\input{sections/04_calibration_simple.tex}
+\input{sections/05_identification_simple.tex}
+\input{sections/06_empirical_comparison.tex}
+\input{sections/07_discussion_nexus.tex}
+\input{sections/08_conclusion.tex}
+
+\clearpage
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+
+During the preparation of this work, the authors used generative AI (large language models) for drafting, editing, and coding tasks. After using these tools, the authors reviewed and edited the content as needed and take full responsibility for the content of the publication.
+
+\clearpage
+\begingroup
+\singlespacing
+\bibliographystyle{plainnat}
+\bibliography{refs}
+\endgroup
+
+\clearpage
+\appendix
+\input{sections/B_formal_model.tex}
+\input{sections/A3_calibration_details.tex}
+\input{sections/A2_sensitivity.tex}
+\input{sections/D_cost_data.tex}
+
+\end{document}

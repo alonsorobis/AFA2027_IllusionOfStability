@@ -1,0 +1,20 @@
+\section{Consolidated summary of the empirical comparison}\label{app:empirical_summary}
+
+Table~\ref{tab:summary_uc} consolidates the per-corridor ordering reported in Sections~\ref{sub:bra_domestic}--\ref{sub:eu_br}. The structural per-asset distinction matters in absolute basis-point terms but not in the regime classification.
+
+\begin{table}[H]
+\centering
+\caption{Summary of headline use cases. Net cost of stablecoin path minus winning competitor (positive means stablecoin dominated).}\label{tab:summary_uc}
+\begin{tabular}{llrrl}
+\toprule
+Use case & Asset & Stablecoin (bps) & Winner (bps) & Outcome \\
+\midrule
+BR domestic retail    & USDT & 467.2 & PIX (0)          & Dominated by 467 bps \\
+US-MX remittance      & USDT & 120.7 & USDT (121)       & Wins by 130 over Wise \\
+EU-BR cross-border    & USDC & 84.9  & USDC (85)        & Wins by 120 over Wise \\
+EU-BR cross-border    & USDT & 107.2 & USDT (107)       & Wins by 98 over Wise \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On the cross-border corridors, the fintech-upgraded incumbent (Wise) is structurally closer to the stablecoin path than the traditional incumbent (SWIFT). The stablecoin's edge over Wise (98 to 130 basis points depending on the asset and corridor) exceeds the calibrated structural risk premium itself, so the stablecoin path still wins net of risk after pricing the off-ramp basis. SWIFT is dominated in every cross-border case by an order of magnitude.

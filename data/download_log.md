@@ -1,0 +1,70 @@
+# Data Download Log
+
+Every dataset used in the AFA 2027 *Illusion of Stability* paper is recorded
+in this file with provenance. Each row corresponds to one execution of a
+download script and reports: the timestamp (UTC), the dataset, the source
+URL or API endpoint, the script that ran the download, the SHA256 of the
+resulting raw file and a one-line note.
+
+The author or AI assistant appends a row after each successful download.
+Failed downloads are also recorded with the error and the retry plan.
+
+| Date (UTC) | Dataset | Source endpoint | Script | Output file | SHA256 | Note |
+|------------|---------|------------------|--------|-------------|--------|------|
+| pending | Coinbase USDC-USD candles | https://api.exchange.coinbase.com/products/USDC-USD/candles | `scripts/download_coinbase.py` | `raw/coinbase_usdc_usd_1h_YYYYMMDD.parquet` | — | full range 2022-01-01 to 2026-05-31 |
+| pending | Coinbase USDT-USD candles | https://api.exchange.coinbase.com/products/USDT-USD/candles | `scripts/download_coinbase.py` | `raw/coinbase_usdt_usd_1h_YYYYMMDD.parquet` | — | full range 2022-01-01 to 2026-05-31 |
+| pending | Coinbase DAI-USD candles | https://api.exchange.coinbase.com/products/DAI-USD/candles | `scripts/download_coinbase.py` | `raw/coinbase_dai_usd_1h_YYYYMMDD.parquet` | — | full range 2022-01-01 to 2026-05-31 |
+| pending | DefiLlama stablecoin supply | https://stablecoins.llama.fi/stablecoins?includePrices=true | `scripts/download_defillama.py` | `raw/defillama_stablecoins_YYYYMMDD.json` | — | full snapshot |
+| pending | FRED macro controls | https://api.stlouisfed.org/fred/series/observations | `scripts/download_fred.py` | `raw/fred_<series>_YYYYMMDD.parquet` | — | DGS10, T10Y2Y, BAMLH0A0HYM2 |
+| pending | World Bank remittance share of GDP | https://api.worldbank.org/v2/country/all/indicator/BX.TRF.PWKR.DT.GD.ZS | `scripts/download_wb_remittance.py` | `raw/wb_remittances_YYYYMMDD.json` | — | full panel |
+| pending | World Bank Remittance Prices Worldwide | https://remittanceprices.worldbank.org/sites/default/files/rpw_dataset_Q1_2026.xlsx | `scripts/download_wb_remittance_prices.py` | `raw/wb_remittance_prices_YYYYMMDD.xlsx` | — | per-corridor fees |
+| pending | BCB cross-border statistics | https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata | `scripts/download_bcb_crossborder.py` | `raw/bcb_crossborder_YYYYMMDD.csv` | — | for Brazil-ban event |
+
+| 20260601T115946Z | DefiLlama stablecoins snapshot | https://stablecoins.llama.fi/stablecoins?includePrices=true | `download_defillama.py` | `raw/defillama_stablecoins_snapshot_20260601.json` | 2c04d866f88cd8b0bb81019d98fdf917635a01260bf0dee890802118339d792e |  |
+| 20260601T115948Z | DefiLlama stablecoins history (all) | https://stablecoins.llama.fi/stablecoincharts/all | `download_defillama.py` | `raw/defillama_stablecoins_history_all_20260601.json` | 3fd37fcd5ace069f59a6efd37f4db59d933363fdbf12332b3598862582c89e59 |  |
+| 20260601T120020Z | FRED DGS10 | https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10 | `download_fred.py` | `raw/fred_DGS10_20260601.parquet` | f0fc2f38ee289a40f2b1791863f1252ef3b6b5ef9c91755ee46fdf1549a3b166 | 16803 obs |
+| 20260601T120021Z | FRED T10Y2Y | https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y2Y | `download_fred.py` | `raw/fred_T10Y2Y_20260601.parquet` | 16fd0041ff3339ba2dfec5d28b9fc4364dc4e64d0175f59e0270bf72187600a5 | 13044 obs |
+| 20260601T120023Z | FRED BAMLH0A0HYM2 | https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLH0A0HYM2 | `download_fred.py` | `raw/fred_BAMLH0A0HYM2_20260601.parquet` | 8f900bbd51978ccac6003577d96b284051843a2c856a385132ae28280e224287 | 794 obs |
+| 20260601T120055Z | FRED DCOILWTICO | https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO | `download_fred.py` | `raw/fred_DCOILWTICO_20260601.parquet` | 1875bcdbef2662db9ce4cbaf805c0af08149415fe0472b32e41cdb26e8c5c991 | 10539 obs |
+| 20260601T120056Z | FRED DTWEXBGS | https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS | `download_fred.py` | `raw/fred_DTWEXBGS_20260601.parquet` | a63ec7d337c092ef9848c24a866b63e114939f51587ac0030653cd08b16dfd77 | 5320 obs |
+| 20260601T120112Z | World Bank BX.TRF.PWKR.DT.GD.ZS | https://api.worldbank.org/v2/country/all/indicator/BX.TRF.PWKR.DT.GD.ZS?format=json&per_page=20000 | `download_wb_remittance.py` | `raw/wb_remittance_share_gdp_20260601.json` | ee1cf16275ba2fe20102a21ad99c011230f5da3ed1f554882ea08b864e8c9a5c |  |
+| 20260601T120132Z | BCB SGS series 27688 | https://api.bcb.gov.br/dados/serie/bcdata.sgs.27688/dados?formato=json | `download_bcb_crossborder.py` | `raw/bcb_sgs_27688_20260601.json` | 2eb19a4915bdf6570818fb1cba5683e443706a3c1bfdc775107166b81b77af01 | 160 observations |
+
+## Session 03 failures (2026-06-01)
+
+| Date (UTC) | Dataset | Source endpoint | Script | Output file | Error | Retry plan |
+|------------|---------|------------------|--------|-------------|-------|------------|
+| 20260601T115940Z | Coinbase USDC-USD candles (1h, 2022-01-01 -> 2026-05-31) | https://api.exchange.coinbase.com/products/USDC-USD/candles | `download_coinbase.py` | none | `requests.exceptions.HTTPError: 404 Client Error: Not Found` on the very first chunk window | Coinbase Exchange public REST appears to have moved; pivot to Advanced Trade REST `https://api.coinbase.com/api/v3/brokerage/market/products/{product_id}/candles` (or kaiko/binance fallback). Re-run in session 04 after script update. |
+| 20260601T115940Z | Coinbase USDT-USD candles | same endpoint family | `download_coinbase.py` | none | not attempted — script aborted on USDC | same pivot |
+| 20260601T115940Z | Coinbase DAI-USD candles | same endpoint family | `download_coinbase.py` | none | not attempted — script aborted on USDC | same pivot |
+| 20260601T115955Z | DefiLlama per-asset id=1 | https://stablecoins.llama.fi/stablecoin/1 | `download_defillama.py` | none (0-byte stub deleted) | `UnicodeEncodeError: 'charmap' codec can't encode character '₮' in position 931` — `Path.write_text` defaulted to cp1252 on Windows | Re-run after patching `download_defillama.py` to pass `encoding='utf-8'`. Snapshot + history-all already saved, so only the top-5 per-asset endpoints need re-fetching. |
+| 20260601T115955Z | DefiLlama per-asset top-5 ids (rest) | https://stablecoins.llama.fi/stablecoin/{id} | `download_defillama.py` | none | aborted after id=1 raised | same patch |
+| 20260601T120111Z | World Bank Remittance Prices Worldwide quarterly XLSX | https://remittanceprices.worldbank.org/sites/default/files/rpw_dataset_Q1_2026.xlsx (also Q4_2025, Q3_2025) | `download_wb_remittance.py` | none | all three candidate URLs failed | Manual download from https://remittanceprices.worldbank.org/ once the current naming convention is known; author task. |
+| 20260601T120132Z | BCB SGS series 21619 | https://api.bcb.gov.br/dados/serie/bcdata.sgs.21619/dados?formato=json | `download_bcb_crossborder.py` | none | `requests.exceptions.HTTPError: 406 Client Error: Not Acceptable` (series id likely invalid or retired) | Verify SGS code for net cross-border financial flows (BPM6) against the BCB SGS catalogue; replace placeholder id and re-run. |
+## Session 04 — fixes and additions (2026-06-01)
+
+| Date (UTC) | Dataset | Source endpoint | Script | Output file | SHA256 | Note |
+|------------|---------|------------------|--------|-------------|--------|------|
+| 20260601T122059Z | CryptoCompare USDC-USD hourly (smoke window) | https://min-api.cryptocompare.com/data/v2/histohour?fsym=USDC&tsym=USD | `download_cryptocompare.py` | `raw/cryptocompare_usdc_usd_3600s_20260601.parquet` | 4283a507593ade092573ef8cb2d1b9858405478a7ba420e1ca663702ffdb3b89 | smoke test only — 2023-03-10 to 2023-03-13; will be overwritten by full 2022-2026 run |
+| 20260601T122258Z | World Bank Remittance Prices Worldwide 2011→2025Q3 | https://datacatalog.worldbank.org/search/dataset/0038015 (manual download by author from https://remittanceprices.worldbank.org/) | manual copy from `C:/Users/alons/Documents/Stablecoins/data/rpw_dataset_2011_2025_q3.xlsx` | `raw/wb_remittance_prices_2011_2025q3_20260601.xlsx` | 02e7ec01e461d027e4c805413839e3378f58366d2660cfeadfff140db288cf82 | 50.8 MB; sheets Terms of Use, Methodology, Legend, Countries, Dataset (up to Q1 2016), Dataset (from Q2 2016); latest quarter available is Q3 2025 |
+| 20260601T122906Z | DefiLlama stablecoins snapshot | https://stablecoins.llama.fi/stablecoins?includePrices=true | `download_defillama.py` | `raw/defillama_stablecoins_snapshot_20260601.json` | 2c04d866f88cd8b0bb81019d98fdf917635a01260bf0dee890802118339d792e |  |
+| 20260601T122910Z | DefiLlama stablecoins history (all) | https://stablecoins.llama.fi/stablecoincharts/all | `download_defillama.py` | `raw/defillama_stablecoins_history_all_20260601.json` | 7e2f59cfb17bbd68d79fd7176fda1c20d9fa2e79dc7931fbb119c0c463345b2d |  |
+| 20260601T122929Z | DefiLlama per-asset id=1 | https://stablecoins.llama.fi/stablecoin/1 | `download_defillama.py` | `raw/defillama_stablecoin_1_20260601.json` | 7fbe2adac991abf5077f7e983b27a1a2447db7b88930b795a9d379566e46b3f0 |  |
+| 20260601T122940Z | DefiLlama per-asset id=2 | https://stablecoins.llama.fi/stablecoin/2 | `download_defillama.py` | `raw/defillama_stablecoin_2_20260601.json` | 75c119691c63ebafacc3571c1217d8418beda2dba33e3a726e566d26846cac7d |  |
+| 20260601T122943Z | DefiLlama per-asset id=209 | https://stablecoins.llama.fi/stablecoin/209 | `download_defillama.py` | `raw/defillama_stablecoin_209_20260601.json` | 190b162850e3f89e079ac7726c4f19583ac7192049f785c6b1cdf7b4e6228cdf |  |
+| 20260601T122947Z | DefiLlama per-asset id=262 | https://stablecoins.llama.fi/stablecoin/262 | `download_defillama.py` | `raw/defillama_stablecoin_262_20260601.json` | d7d70925053760f3fa938cfb07c8e0426cccbf2c1176f107fd07f17c5ad0fd5a |  |
+| 20260601T122953Z | DefiLlama per-asset id=5 | https://stablecoins.llama.fi/stablecoin/5 | `download_defillama.py` | `raw/defillama_stablecoin_5_20260601.json` | 21cef80e6073f0ee20202bcbb96455b089428b60b0d15020dd350e1d2dc6123a |  |
+| 20260601T123203Z | CryptoCompare USDC-USD hourly | https://min-api.cryptocompare.com/data/v2/histohour?fsym=USDC&tsym=USD | `download_cryptocompare.py` | `raw/cryptocompare_usdc_usd_3600s_20260601.parquet` | 08d7f4cb40943a8e1aa2c2eacf688a7edd38f466f14e1cd067c0640d5cdd16de | window 2022-01-01T00:00:00+00:00 to 2026-05-31T23:59:59+00:00 |
+| 20260601T123313Z | CryptoCompare USDT-USD hourly | https://min-api.cryptocompare.com/data/v2/histohour?fsym=USDT&tsym=USD | `download_cryptocompare.py` | `raw/cryptocompare_usdt_usd_3600s_20260601.parquet` | 30a136adb92858af0be64bc39771b848803301199c64bf8f1524e203ff558e55 | window 2022-01-01T00:00:00+00:00 to 2026-05-31T23:59:59+00:00 |
+| 20260601T123449Z | CryptoCompare DAI-USD hourly | https://min-api.cryptocompare.com/data/v2/histohour?fsym=DAI&tsym=USD | `download_cryptocompare.py` | `raw/cryptocompare_dai_usd_3600s_20260601.parquet` | 66bf7c2a0de85003cb935eee28a8f7ea70b01b1c9126dcd0c67df3b0c570736a | window 2022-01-01T00:00:00+00:00 to 2026-05-31T23:59:59+00:00 |
+| 20260601T123507Z | Coinbase Advanced Trade USDT-USD candles (ONE_HOUR) | https://api.coinbase.com/api/v3/brokerage/market/products/USDT-USD/candles | `download_coinbase.py` | `raw/coinbase_adv_usdt_usd_3600s_20260601.parquet` | 4c29696ee39428317235d6737d38a81b2770f3c839ce749e2e246891570aa1d9 | window 2022-01-01T00:00:00+00:00 to 2026-05-31T23:59:59+00:00 |
+| 20260601T123804Z | Coinbase Advanced Trade DAI-USD candles (ONE_HOUR) | https://api.coinbase.com/api/v3/brokerage/market/products/DAI-USD/candles | `download_coinbase.py` | `raw/coinbase_adv_dai_usd_3600s_20260601.parquet` | cbd722d8a6cc5e4e941ae3a5add9837d77daca6783ccd250ef4eb16f88b2bea3 | window 2022-01-01T00:00:00+00:00 to 2026-05-31T23:59:59+00:00 |
+| 20260601T123947Z | Coinbase Advanced Trade DAI-USD candles (ONE_HOUR) | https://api.coinbase.com/api/v3/brokerage/market/products/DAI-USD/candles | `download_coinbase.py` | `raw/coinbase_adv_dai_usd_3600s_20260601.parquet` | cbd722d8a6cc5e4e941ae3a5add9837d77daca6783ccd250ef4eb16f88b2bea3 | window 2022-01-01T00:00:00+00:00 to 2026-05-31T23:59:59+00:00 |
+## Session 07 — BCB primary-source PDFs on Brazil eFX/stablecoin framework (2026-06-01)
+
+| Date (UTC) | Dataset | Source endpoint | Script | Output file | SHA256 | Note |
+|------------|---------|------------------|--------|-------------|--------|------|
+| 20260601T140116Z | BCB coletiva 10/11/2025 — Regulamentação da prestação de serviços de ativos virtuais e mercado de câmbio | https://www.bcb.gov.br/conteudo/home-ptbr/TextosApresentacoes/AVs_mercado_cambio_%20e_capitais_coletiva1_10.11.25.pdf | manual download by Claude session 07 | `raw/manual/bcb_coletiva_avs_mercado_cambio_10_11_2025.pdf` | 8eaef88c9c2eca6f2ad7fd5eaf413d9f5c4fd76eb0cc78dd5aa41a6f508929bd | 514 KB; BCB press deck announcing Resoluções 519/520/521 of 2025-11-10 framing stablecoins inside FX market and international capital flows; entry into force 2026-02-02 |
+| 20260601T140119Z | BCB workshop — Stablecoins: análise jurídico-regulatória a partir de suas funcionalidades | https://www.bcb.gov.br/conteudo/eventos/Documents/moedas_digitais/tokenizacao/WorkTOK-Mimeo-Direito_1B_B_Stablecoins_Uma_analise_juridico_regulatoria_a_partir_de_suas_funcionalidades.pdf | manual download by Claude session 07 | `raw/manual/bcb_workshop_stablecoins_juridico_regulatorio.pdf` | faa359d5c04ef623f686b0b9b780b1983770cd59a8c4f5507c96b4deda422a7d | 337 KB; BCB workshop paper on stablecoin legal-regulatory analysis; useful as background for the Brazil-ban event narrative |
+
+| 20260601T164916Z | CryptoCompare USTC-USD hourly | https://min-api.cryptocompare.com/data/v2/histohour?fsym=USTC&tsym=USD | `download_cryptocompare.py` | `raw/cryptocompare_ustc_usd_3600s_20260601.parquet` | bac84243a2126ba735d94683bb10106b58a6d0645d053b70610905859e77421a | window 2022-04-01T00:00:00+00:00 to 2022-06-30T23:59:59+00:00 |

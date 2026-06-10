@@ -1,0 +1,118 @@
+\section{Cost-benefit analysis across corridors}\label{sec:cost_benefit}
+
+This section maps the calibrated model into a per-corridor cost-benefit comparison against a named incumbent rail. We define a per-unit certainty-equivalent cost for the stablecoin and for the incumbent, compute the net metric for each of three named corridors, and identify the breakeven level of the latent fundamental at which the metric crosses zero.
+
+\subsection{Setup and metric}\label{sub:cb_setup}
+
+We pick three named corridors that satisfy three criteria simultaneously: they have deep coverage in the World Bank Remittance Prices Worldwide panel (US to Mexico has 400 quarterly observations across 17 providers; US to the Philippines has 496 across 16; Europe to Brazil has 214 across 14), they span the three end-user types of the model (retail, cross-border, wholesale), and one of them is the natural corridor on which to evaluate the November 2025 Banco Central do Brasil package. The retail-class corridor is US to Mexico (USA-MEX), with the incumbent service proxied by the average total cost of the Wise and similar fintech remittance services tracked in the RPW panel. The cross-border-class corridor is US to the Philippines (USA-PHL), with the incumbent proxied by the average of bank-account transfers and fintech remittance services in the same panel. The wholesale-class corridor is Europe to Brazil (EU-BRA), with the incumbent proxied by a TARGET2 leg plus correspondent banking into the Brazilian RTGS. The wholesale corridor's interpretation is conditional on a settlement-finality assumption discussed below and in Section~\ref{sec:discussion}.
+
+The cost comparison uses three inputs per corridor: the per-unit fee, a settlement-cost premium that reflects the working-capital opportunity cost of slow incumbent settlement, and a counterparty premium that reflects corridor-specific institutional risk. We set the incumbent fees from the RPW panel (479 basis points for retail, 464 for cross-border, 487 for wholesale). The settlement-cost and counterparty premiums are stylised: we set them at $(20, 30, 5)$ and $(5, 15, 10)$ basis points respectively, reflecting the higher working-capital cost of slower fintech remittance services, the lower one of TARGET2-backed wholesale settlement, and per-corridor counterparty risk that is non-trivial for cross-border SWIFT and small for the European leg. These inputs are not calibrated from data; we present them as reference values and report sensitivity in Appendix~\ref{sec:sensitivity}. A payment-economics referee should read the headline net metric as conditional on these inputs and the appendix sensitivity as the relevant robustness check.
+
+Per-corridor incumbent fee data come from the RPW panel restricted to the 2023-2024 window. Table~\ref{tab:rpw_corridor} reports the observation count, number of firms, and mean and median total cost per corridor.
+
+\begin{table}[h]
+\centering
+\caption{Incumbent rail benchmarks from the World Bank Remittance Prices Worldwide quarterly panel, 2023Q1-2024Q4. Total cost is reported as a percentage of the amount sent. Sources are USA, ESP, ITA. Destinations are MEX, PHL, BRA.}
+\label{tab:rpw_corridor}
+\begin{tabular}{lrrrr}
+\toprule
+Corridor & Observations & Firms & Mean total cost (\%) & Median (\%) \\
+\midrule
+USA $\to$ MEX & 400 & 17 & 4.79 & 4.44 \\
+USA $\to$ PHL & 496 & 16 & 4.64 & 4.34 \\
+ESP $\to$ BRA & 176 & 11 & 4.87 & 4.38 \\
+ITA $\to$ BRA & 214 & 14 & 6.87 & 4.88 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The per-unit certainty-equivalent cost of using the stablecoin in corridor $c$ for the corresponding class $k$ is
+\begin{equation}\label{eq:cec_stbl}
+\mathrm{CEC}^{stbl}_c = \mathbb{E}_\theta\!\left[\mathrm{fee}_c^{stbl} + \bigl(1 - p^{sec}(D)\bigr) \mathbf{1}\{s_i < s^*_k\} + c_q q_k + h \cdot \mathrm{LGD}\right] + \gamma_k \, \mathrm{Var}_\theta\bigl(p^{sec}(D)\bigr).
+\end{equation}
+The terms in the expectation are, in order, the stablecoin transaction fee (gas plus DEX or CEX fee), the expected haircut conditional on choosing to redeem, the per-period congestion cost, and the expected loss from issuer default. The variance term $\gamma_k \mathrm{Var}_\theta(p^{sec})$ is a risk-aversion adjustment with class-specific weight $\gamma_k$; we report the metric for two values of $\gamma_k$ as a robustness check. The corresponding incumbent cost is
+\begin{equation}\label{eq:cec_inc}
+\mathrm{CEC}^{inc}_c = \mathrm{fee}_c^{inc} + c^{settle,inc}_c + \rho_c^{inc},
+\end{equation}
+which sums the observed fee, a working-capital opportunity cost from slow settlement, and a counterparty risk premium. The net metric is
+\begin{equation}\label{eq:net}
+\Delta_c \equiv \mathrm{CEC}^{stbl}_c - \mathrm{CEC}^{inc}_c.
+\end{equation}
+A negative $\Delta_c$ indicates the stablecoin dominates; a positive $\Delta_c$ indicates the incumbent dominates. The breakeven value is the level $\theta^\star_c$ at which $\Delta_c = 0$.
+
+\subsection{Net metric and breakeven by corridor}\label{sub:cb_by_corridor}
+
+Table~\ref{tab:cb_corridor} reports the components of $\mathrm{CEC}^{stbl}_c$ and $\mathrm{CEC}^{inc}_c$ at the calibrated $\boldsymbol{\phi}^\star$. Three input choices discipline the comparison. The stablecoin transaction fee $\mathrm{fee}_c^{stbl}$ is set at 50 basis points, reflecting gas plus venue fees in a Tron or Solana corridor. The per-class congestion-cost coefficient $c_q$ is set to $0.05$ for the retail class, $0.10$ for the cross-border class, and $1.00$ for the wholesale class. The asymmetry follows from the economic interpretation: wholesale users value settlement finality and atomic execution much more than retail and cross-border users do, and the congestion penalty is the place in the model where that asymmetry enters. The rail queue $q$ is held at $0.10$ across corridors. The probability of being in the stress regime is set to $p_{\text{stress}} = 96/8{,}856 \approx 1.08\%$, equal to the empirical fraction of hourly observations classified as stress in the calibration window. On the incumbent side, the fee comes from Table~\ref{tab:rpw_corridor}; the settlement-cost premium is 20, 30 and 5 basis points for retail, cross-border and wholesale respectively, reflecting the higher working-capital cost of slower fintech remittance services and the lower one of TARGET2-backed wholesale settlement; the counterparty premium is 5, 15 and 10 basis points respectively.
+
+\begin{table}[h]
+\centering
+\caption{Per-corridor cost-benefit decomposition at $\boldsymbol{\phi}^\star$ with $\mathrm{fee}_c^{stbl} = 50$ bps, class-specific congestion coefficient $c_q$, and probability-weighted regimes ($p_{\text{stress}} = 1.08\%$). $\Delta_c < 0$ indicates that the stablecoin dominates the incumbent. All values are in basis points.}
+\label{tab:cb_corridor}
+\begin{tabular}{lrrrr}
+\toprule
+Corridor & $\mathrm{CEC}^{stbl}_c$ (baseline) & $\mathrm{CEC}^{stbl}_c$ (stress) & $\mathrm{CEC}^{stbl}_c$ (weighted) & $\Delta_c$ \\
+\midrule
+USA $\to$ MEX (retail) & $159$ & $738$ & $165$ & $-339$ \\
+USA $\to$ PHL (cross-border) & $209$ & $786$ & $216$ & $-294$ \\
+EU $\to$ BRA (wholesale) & $1{,}109$ & $1{,}691$ & $1{,}115$ & $+613$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The retail and cross-border corridors deliver a negative net metric (savings of 341 and 296 basis points respectively) once the cost is averaged over baseline and stress regimes weighted by the empirical regime frequency. The wholesale corridor delivers a positive net metric of 610 basis points conditional on the wholesale congestion-cost coefficient being set at $c_q^{\text{wholesale}} = 1.00$. The conditioning matters: the coefficient is not calibrated from data, it is set to reflect the institutional fact that wholesale users (in our calibration, EU to Brazil large-value flows) require atomic settlement and do not tolerate uncertain conversion timing. Section~\ref{sub:cb_decomposition} below decomposes the wholesale cost number explicitly and shows that the $1{,}000$ basis points added by the congestion channel is what makes wholesale unattractive in the model. Section~\ref{sub:cb_sensitivity} reports the value of $c_q^{\text{wholesale}}$ at which the wholesale sign flips. The wholesale corridor is therefore best read as a counterfactual reflection of the settlement-finality requirement of wholesale flows rather than as a derived prediction of the model.
+
+\subsection{Breakeven response to the Brazilian framework}\label{sub:cb_brazil}
+
+The November 2025 Banco Central do Brasil package frames virtual assets within the foreign-exchange market and the international-capital framework. The follow-up resolution issued in 2026 confirms that stablecoins cannot be used in electronic foreign-exchange operations. The package therefore shifts the choice set for the cross-border class: the corridor's accessible cost is no longer the unrestricted stablecoin cost, but the incumbent rail or a reduced set of regulated alternatives.
+
+We represent the package as a discrete shock that raises the per-unit cost of using the stablecoin in the affected corridor by 150 basis points, reflecting the lost programmability of electronic foreign-exchange use combined with the additional regulatory friction of routing the operation through an authorised PSAV. The 150 basis-point figure is taken as a reference value; the appendix reports sensitivity to alternative magnitudes. We use the USA to Philippines corridor as the illustrative cross-border corridor for the exercise: although the actual eFX restriction applies to flows into and out of Brazil, the corridor structure of the cross-border class is the same, and the USA to Philippines panel gives the cleanest fee data for 2023-2024. Table~\ref{tab:cb_brazil} reports the pre-package and post-package values of the cost-benefit metric.
+
+\begin{table}[h]
+\centering
+\caption{Response of the cross-border corridor cost-benefit metric to the November 2025 Banco Central do Brasil package. The post-package state adds 150 basis points to $\mathrm{CEC}^{stbl}_c$ in the affected corridor; all other parameters are held fixed. Values are in basis points.}
+\label{tab:cb_brazil}
+\begin{tabular}{lrr}
+\toprule
+& Pre-package & Post-package \\
+\midrule
+$\mathrm{CEC}^{stbl}_{\text{USA-PHL}}$ (weighted) & $216$ & $366$ \\
+$\mathrm{CEC}^{inc}_{\text{USA-PHL}}$ & $509$ & $509$ \\
+$\Delta_{\text{USA-PHL}}$ & $-294$ & $-144$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The post-package metric remains negative: the stablecoin continues to be cheaper than the incumbent service in the cross-border corridor even after the regulatory penalty enters the comparison. The margin shrinks by roughly half, from 296 to 146 basis points. The 150 basis-point shift therefore provides a benchmark for how strong the regulatory friction would have to be to equalise the two costs: an additional 146 basis points of friction (or 296 basis points net of any existing buffer) would flip the sign of $\Delta_c$ and place the incumbent service ahead. Section~\ref{sec:discussion} reads these magnitudes as policy inputs.
+
+\subsection{Risk decomposition by channel and regime}\label{sub:cb_decomposition}
+
+The certainty-equivalent cost has four additive channels: the transaction fee, the redemption haircut conditional on choosing to redeem, the congestion cost, and the expected loss from issuer default. Table~\ref{tab:cb_decomp} reports the four components per corridor and per regime, in basis points. The decomposition makes the corridor-by-corridor reading concrete and identifies the channel that drives each result.
+
+\begin{table}[h]
+\centering
+\caption{Risk decomposition of $\mathrm{CEC}^{stbl}_c$ at $\boldsymbol{\phi}^\star$ by channel and regime, in basis points. The fee channel is uniform at 50 bps across corridors. The redemption haircut equals $\Pr(\text{redeem}) \cdot (1 - p^{sec})$ at the regime's distribution of $\theta$. The congestion channel equals $c_q^k \cdot q$ with $c_q$ class-specific. The default-loss channel equals $h \cdot \mathrm{LGD}$ with both higher in the stress regime ($h = 0.10$, $\mathrm{LGD} = 0.40$) than in the baseline ($h = 0.01$, $\mathrm{LGD} = 0.20$).}
+\label{tab:cb_decomp}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{3}{c}{Baseline regime} & \multicolumn{3}{c}{Stress regime} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Channel (bps) & USA-MEX & USA-PHL & EU-BRA & USA-MEX & USA-PHL & EU-BRA \\
+\midrule
+Fee & 50 & 50 & 50 & 50 & 50 & 50 \\
+Redemption haircut & 39 & 39 & 39 & 238 & 236 & 240 \\
+Congestion ($c_q^k \cdot q$) & 50 & 100 & 1{,}000 & 50 & 100 & 1{,}000 \\
+Default loss ($h \cdot \mathrm{LGD}$) & 20 & 20 & 20 & 400 & 400 & 400 \\
+\midrule
+$\mathrm{CEC}^{stbl}_c$ (total) & 159 & 209 & 1{,}109 & 738 & 786 & 1{,}691 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Within a regime, the corridor differentiation is driven almost entirely by congestion. The redemption-haircut channel is nearly uniform across corridors because the class signal precisions span a narrow range $\sigma_k \in [0.10, 0.22]$, which produces similar redemption rates across classes given the same $\theta$. The congestion channel discriminates the corridors by an order of magnitude through the class-specific $c_q^k$. Across regimes, the stress-state cost is driven by two channels in roughly equal measure. The redemption haircut rises by about $200$ basis points because the realised $p^{sec}$ falls when $\theta$ is in the stress range, and the default-loss channel rises by $380$ basis points because the stress regime carries a tenfold-higher issuer hazard and a doubled loss-given-default. The fee and the congestion channels do not vary with the regime in the present specification.
+
+The decomposition clarifies what the wholesale null is and is not. It is not a statement about run risk: the redemption haircut in the wholesale corridor matches that of the retail and cross-border corridors. It is a statement about settlement finality: the wholesale-class congestion sensitivity captures the institutional fact that wholesale users do not tolerate uncertain settlement, which adds $1{,}000$ basis points to the wholesale stablecoin cost regardless of the calibrated structural block. A reduction of the wholesale congestion sensitivity to retail levels would flip the wholesale sign, but the reduction would contradict the institutional reading of the wholesale corridor as TARGET2-served.
+
+\subsection{Sensitivity}\label{sub:cb_sensitivity}
+
+Two robustness exercises discipline the cost-benefit reading. First, we report the metric for two values of the risk-aversion weight $\gamma_k$, one zero and one calibrated to a standard payment-economics value. The variance of $p^{sec}$ at the calibrated stress regime is small enough ($\mathrm{Var}_\theta(p^{sec}) \approx 6 \times 10^{-6}$) that the variance penalty $\gamma_k \mathrm{Var}_\theta(p^{sec})$ contributes less than one basis point at $\gamma_k = 1$. The sign of $\Delta_c$ is therefore preserved across the two values of $\gamma_k$. Second, we permute the corridor-class assignment to confirm that the qualitative pattern (retail and cross-border negative $\Delta_c$, wholesale positive $\Delta_c$) is driven by the class-specific congestion-cost coefficient rather than by the specific corridor mapping. The wholesale null reverses only if the wholesale congestion coefficient $c_q^{\text{wholesale}}$ is lowered to retail levels, which would be inconsistent with the institutional reality that wholesale users value settlement finality more than retail users do.

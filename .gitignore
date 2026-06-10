@@ -1,0 +1,38 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.synctex.gz
+*.toc
+_c.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv-afa/
+venv/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (keep structure, ignore large files)
+data/raw/
+*.csv
+*.json
+
+# Temporary
+*.tmp
+.tmp/

@@ -1,0 +1,91 @@
+\section{Proofs of the three propositions}\label{sec:proofs}
+
+This appendix proves the three propositions stated in the body. Notation follows Section~\ref{sec:model}. Throughout, the posterior of $\theta$ given $s_i = s^*_k$ in the improper uniform-prior limit is $\theta \mid s_i = s^*_k \sim \mathcal{N}(s^*_k, \sigma_k^2)$.
+
+\subsection*{Setup}
+
+Write $\boldsymbol{s} = (s_1, \dots, s_K) \in \mathbb{R}^K$. Define the indifference gap function
+\begin{equation}\label{eq:Fk}
+F_k(\boldsymbol{s}) \equiv \mathbb{E}\!\left[V_R(D(\theta; \boldsymbol{s})) - V_H(\theta) \mid s_i = s_k\right], \qquad k = 1, \dots, K,
+\end{equation}
+where $V_R$, $V_H$ and $D$ are given by equations~\eqref{eq:VR}, \eqref{eq:VH} and~\eqref{eq:D} respectively. Let $\bar{\boldsymbol{s}}$ denote the rectangle $[-L, +L]^K$ for some $L$ large enough that $\bar{\boldsymbol{s}}$ contains the threshold profile (existence of such an $L$ is verified at the end of the proof of Proposition~\ref{prop:existence_proof}).
+
+\subsection*{Proof of Proposition~\ref{prop:existence}}\label{sub:proof_p1}
+
+\begin{proposition}\label{prop:existence_proof}
+Under the model specification of Section~\ref{sec:model} with $\sigma_k > 0$ for each $k$, the fixed-point system $\{F_k(\boldsymbol{s}) = 0\}_{k=1}^K$ admits a unique solution $\boldsymbol{s}^* \in \mathbb{R}^K$.
+\end{proposition}
+
+\begin{proof}
+We proceed in four steps.
+
+\emph{Step 1 (Continuity).} $F_k$ is continuous in $\boldsymbol{s}$ because $\Phi$ is continuous, the aggregate demand $D(\theta; \boldsymbol{s}) = \sum_j W_j \Phi((s_j - \theta)/\sigma_j)$ is continuous in $\boldsymbol{s}$, the secondary-price block $p^{sec}(D)$ is continuous in $D$ (the bounded-floor truncation is a continuous operation), and $V_R, V_H$ are continuous in their arguments. The expectation against the Gaussian posterior preserves continuity.
+
+\emph{Step 2 (Monotonicity in own action).} Differentiate $F_k$ with respect to $s_k$. Two channels contribute. Direct: the posterior mean $\mathbb{E}[\theta \mid s_i = s_k] = s_k$ rises one-for-one in $s_k$, so $\mathbb{E}[V_H \mid s_k] = s_k - c_q^k q_k + \omega_k$ rises one-for-one. Indirect: $D$ is increasing in $s_k$ via $\Phi$, so $p^{sec}$ is non-increasing in $s_k$, hence $V_R$ is non-increasing in $s_k$. Both effects push $F_k = \mathbb{E}[V_R - V_H \mid s_k]$ down. Hence $\partial F_k / \partial s_k < 0$ strictly.
+
+\emph{Step 3 (Monotonicity in others' actions and best-response slope).} For $j \neq k$, $\partial F_k / \partial s_j \leq 0$ because raising $s_j$ raises $D$ at any $\theta$, which lowers $V_R$. The implicit-function representation of the best response is $g_k(\boldsymbol{s}_{-k}) = \{s_k : F_k(\boldsymbol{s}) = 0\}$. By the implicit function theorem,
+\[
+\frac{\partial g_k}{\partial s_j} = -\frac{\partial F_k / \partial s_j}{\partial F_k / \partial s_k} \leq 0,
+\]
+because numerator and denominator have the same sign. The game has strategic substitutes.
+
+\emph{Step 4 (Existence and uniqueness).} For $s_k \to -\infty$, $F_k \to +\infty$ because $V_H \to -\infty$ (linearly in $\theta$) while $V_R$ stays bounded above by $1 - \phi$. For $s_k \to +\infty$, $F_k \to -\infty$ by the same reasoning. By the intermediate value theorem and the strict monotonicity from Step 2, $g_k$ is well-defined and continuous on a compact rectangle $\bar{\boldsymbol{s}}$ of sufficient size. The joint best-response map $\boldsymbol{g}(\boldsymbol{s}) = (g_1(\boldsymbol{s}_{-1}), \dots, g_K(\boldsymbol{s}_{-K}))$ is continuous and maps $\bar{\boldsymbol{s}}$ into itself; existence follows from Brouwer's theorem. Uniqueness follows because the iterated best-response operator is a contraction in the supremum norm under the regularity condition
+\begin{equation}\label{eq:contraction_condition}
+\max_k \sum_{j \neq k} \left| \frac{\partial g_k}{\partial s_j} \right| < 1,
+\end{equation}
+which is satisfied provided the local sensitivity of $V_R$ to $D$ (proportional to $\psi \nu \, U^{\nu-1}/\widetilde{M}^\nu$) is small relative to the unit slope of $V_H$ in $\theta$. Condition~\eqref{eq:contraction_condition} is verified numerically at the calibrated parameter vector reported in Section~\ref{sec:results}.
+\end{proof}
+
+\subsection*{Proof of Proposition~\ref{prop:reserve}}\label{sub:proof_p2}
+
+\begin{proposition}\label{prop:reserve}
+Let $\boldsymbol{s}^*(R)$ denote the threshold profile at issuer reserves $R$. Under the regularity condition~\eqref{eq:contraction_condition}, the aggregate redemption mass at the fixed point is non-decreasing in $R$:
+\[
+\frac{d D(\theta; \boldsymbol{s}^*(R))}{dR} \geq 0 \quad \text{for every } \theta.
+\]
+\end{proposition}
+
+\begin{proof}
+We use a monotone comparative statics argument in the spirit of Topkis. From the proof of Proposition~\ref{prop:existence_proof}, $\partial F_k / \partial s_k < 0$ and $\partial F_k / \partial s_j \leq 0$ for $j \neq k$. We also have $\partial F_k / \partial R > 0$, because a higher reserve raises the primary share $\min\{1, R/D\}$ and lowers the unmet demand $U$, both of which raise $V_R(D)$ at any $D$ and therefore raise $F_k = \mathbb{E}[V_R - V_H \mid s_k]$.
+
+The implicit best-response function $g_k(\boldsymbol{s}_{-k}; R)$ is the unique solution of $F_k(\boldsymbol{s}; R) = 0$ in $s_k$. By the implicit function theorem,
+\[
+\frac{\partial g_k}{\partial R} = -\frac{\partial F_k / \partial R}{\partial F_k / \partial s_k} > 0,
+\]
+because the numerator is positive and the denominator is negative. The best response of every class is therefore increasing in $R$.
+
+By Topkis's monotone comparative statics theorem applied to the game with strategic substitutes (Step 3 of Proposition~\ref{prop:existence_proof}), the largest equilibrium of the $K$-class system is increasing in $R$. The equilibrium is unique under condition~\eqref{eq:contraction_condition}, so the unique equilibrium itself is increasing: $ds_k^*/dR \geq 0$ for each $k$, with strict inequality for at least one $k$ at any interior point.
+
+The aggregate redemption mass at the fixed point is
+\[
+D(\theta; \boldsymbol{s}^*(R)) = \sum_k W_k \, \Phi\!\left(\frac{s_k^*(R) - \theta}{\sigma_k}\right),
+\]
+which is strictly increasing in each $s_k^*$. Therefore $dD^*/dR \geq 0$, with strict inequality at any interior point.
+
+The result inverts the static intuition that tighter reserves mechanically increase redemption pressure. The economic content is the secondary-market dampening channel: a higher reserve raises the primary share that any redeeming agent expects to capture, and raises the secondary price by reducing unmet demand. Both effects raise $V_R$ at the threshold and the marginal agent is willing to redeem at a higher signal. Aggregating across classes, the equilibrium redemption mass increases. The result formulates as a property of the $K$-class threshold profile the empirical pattern that \citet{ma_zeng_zhang_2025} document in the cross-section of stablecoins between concentrated and competitive arbitrage venues.
+\end{proof}
+
+\subsection*{Proof of Proposition~\ref{prop:convenience}}\label{sub:proof_p3}
+
+\begin{proposition}\label{prop:convenience}
+Let $\boldsymbol{s}^*(\omega)$ denote the threshold profile when the convenience yield $\omega_k = \omega$ for every $k$. Under the regularity condition~\eqref{eq:contraction_condition}, the aggregate redemption mass at the fixed point is strictly decreasing in $\omega$:
+\[
+\frac{d D(\theta; \boldsymbol{s}^*(\omega))}{d\omega} < 0 \quad \text{for every } \theta.
+\]
+\end{proposition}
+
+\begin{proof}
+The argument parallels Proposition~\ref{prop:reserve}. Raising $\omega$ raises $V_H = \theta - c_q q + \omega$ at any $\theta$, so $\partial F_k / \partial \omega < 0$. By the implicit function theorem,
+\[
+\frac{\partial g_k}{\partial \omega} = -\frac{\partial F_k / \partial \omega}{\partial F_k / \partial s_k} < 0,
+\]
+because the numerator is negative and the denominator is negative. Each class's best response is decreasing in $\omega$.
+
+By Topkis applied with the reversed direction, the unique equilibrium is decreasing: $ds_k^*/d\omega < 0$ for each $k$. The aggregate redemption mass $D(\theta; \boldsymbol{s}^*(\omega))$ is strictly increasing in each $s_k^*$, hence $dD^*/d\omega < 0$.
+
+The economic content of the result is that more useful stablecoins are more stable at the redemption stage. A higher convenience yield raises the value of holding at every threshold, which makes the marginal agent require worse news before they choose to redeem. The result reformulates in the $K$-class setting the run-attenuation channel that \citet{bertsch_2025_adoption_fragility} identifies in the adoption decision.
+\end{proof}
+
+\subsection*{Remark on the regularity condition}
+
+Condition~\eqref{eq:contraction_condition} is verified numerically at the calibrated $\boldsymbol{\phi}^\star$ reported in Section~\ref{sec:results}. The maximum row-sum of $|\partial g_k / \partial s_j|$ over $j \neq k$ is approximately $0.008$ in both the baseline and stress regimes, two orders of magnitude below the unit bound. The fixed point is therefore strongly contractive at the calibrated parameter vector, and Propositions~\ref{prop:existence_proof}, \ref{prop:reserve} and \ref{prop:convenience} apply. The small magnitude reflects the fact that, at the calibrated secondary-market block, the indirect effect of one class's threshold on another class's payoff is weak.

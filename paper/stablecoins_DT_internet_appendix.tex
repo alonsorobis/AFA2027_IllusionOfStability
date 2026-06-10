@@ -1,0 +1,55 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black
+]{hyperref}
+\usepackage[authoryear,round]{natbib}
+\usepackage{xr}
+\externaldocument{stablecoins_DT}
+\graphicspath{{figures/}}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{assumption}{Assumption}
+
+\title{Internet Appendix\\
+The Risk-Adjusted Cost of Stablecoins as Payment Instruments}
+\author{
+Andres Alonso-Robisco\thanks{Banco de Espa\~na. The views expressed are the
+sole responsibility of the author and do not necessarily reflect those of
+Banco de Espa\~na or the Eurosystem.}
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+\onehalfspacing
+
+\noindent This internet appendix is the comprehensive companion to the short working paper ``The Risk-Adjusted Cost of Stablecoins as Payment Instruments.'' The working paper states the argument schematically; everything technical lives here. It collects, in order: the formal global-game model and its propositions (Appendix~\ref{app:formal_model}); the calibration and identification diagnostics (Appendix~\ref{app:calib_details}); the regulatory-uncertainty band, the counterparty-parameter sensitivity, and the residual diagnostics (Appendix~\ref{app:sensitivity}); the consolidated use-case summary (Appendix~\ref{app:empirical_summary}); and supplementary descriptive evidence, a retail-attention cross-check, and a two-class robustness extension. Cross-references of the form ``Section~X'' point to the working paper; the risk premium $\Pi_{\text{risk}}$, the calibrated vector $\phi^*$, and the use-case rankings are defined there.
+
+\appendix
+
+\input{sections/B_formal_model.tex}
+\input{sections/A3_calibration_details.tex}
+\input{sections/A2_sensitivity.tex}
+\input{sections/C_empirical_summary.tex}
+
+\input{sections/IA_supplementary.tex}
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+\end{document}
