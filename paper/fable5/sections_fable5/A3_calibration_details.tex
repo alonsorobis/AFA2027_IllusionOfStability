@@ -16,7 +16,7 @@ The loss is the weighted sum of squared moment errors:
 \begin{equation}\label{eq:loss}
 L(\phi) = \sum_{j=1}^{6} w_j (m_j(\phi) - \hat m_j)^2,
 \end{equation}
-where $m_j(\phi)$ is the model moment under $\phi$ from a Monte Carlo simulation, $\hat m_j$ is the data target, and $w_j$ is the weight. Weights are chosen so that each moment contributes a comparable amount to the unweighted loss at the calibration anchor. The Monte Carlo uses $N=300$ scenario draws for the main pass and a Nelder-Mead simplex search with up to 80 iterations on a warm-start parameter vector obtained from a $N=100$ warm-up pass.
+where $m_j(\phi)$ is the model moment under $\phi$ from a Monte Carlo simulation, $\hat m_j$ is the data target, and $w_j$ is the weight. Weights are chosen so that each moment contributes a comparable amount to the unweighted loss at the calibration anchor. A weighting proportional to the inverse sampling variance of the empirical moments would not serve the object here: the baseline regime is quasi-deterministic by construction, so its moments carry near-zero sampling variance and would absorb effectively all the weight, concentrating the fit on the calm regime at the expense of the stress regime the model is built to price; the scale normalisation keeps both regimes informative. The Monte Carlo uses $N=300$ scenario draws for the main pass and a Nelder-Mead simplex search with up to 80 iterations on a warm-start parameter vector obtained from a $N=100$ warm-up pass.
 
 \subsection{Optimisation results}\label{sub:opt_results}
 
