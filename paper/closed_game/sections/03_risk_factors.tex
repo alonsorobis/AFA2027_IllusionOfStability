@@ -5,39 +5,44 @@ The holding leg of the stablecoin workflow is where the expected loss lives. A h
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[
-  font=\footnotesize, >=Latex, node distance=5mm,
-  box/.style={draw, rounded corners=2pt, minimum height=8mm, inner sep=4pt, align=center},
+  font=\footnotesize, >=Latex,
+  box/.style={draw, rounded corners=2pt, minimum width=2.0cm, minimum height=8mm, inner sep=3pt, align=center},
   trad/.style={box, fill=blue!8},
   stab/.style={box, fill=red!7},
-  hold/.style={box, fill=green!10, minimum height=12mm},
-  lab/.style={font=\scriptsize, align=center},
-  fee/.style={font=\scriptsize\itshape, align=center}
+  hold/.style={box, fill=green!12, minimum width=2.4cm, minimum height=10mm, very thick},
+  cost/.style={font=\scriptsize\itshape, align=center, text=black!70},
+  note/.style={font=\scriptsize, align=center}
 ]
-% --- Panel A: traditional rail
-\node[lab, anchor=west] at (0,2.55) {\textbf{(a) Traditional rail (SWIFT / RTGS)}};
-\node[trad] (ta) at (1.2,1.7) {sender\\deposit};
-\node[trad] (tb) at (4.4,1.7) {rail\\(SWIFT/RTGS)};
-\node[trad] (tc) at (7.6,1.7) {recipient\\deposit};
-\draw[->] (ta) -- node[fee, above]{fee + FX} (tb);
-\draw[->] (tb) -- node[fee, above]{settlement} (tc);
-\node[lab, anchor=west, text=blue!50!black] at (9.0,1.7) {underlying $=$ deposit\\(par, insured, resolved)\\[2pt]\textbf{expected loss $=0$}};
-% --- Panel B: stablecoin circuit
-\node[lab, anchor=west] at (0,0.7) {\textbf{(b) Stablecoin circuit (fiat to fiat)}};
-\node[stab] (sa) at (0.9,-0.4) {fiat};
-\node[stab] (sb) at (3.0,-0.4) {on-ramp};
-\node[hold] (sc) at (5.5,-0.4) {hold coin};
-\node[stab] (sd) at (8.0,-0.4) {off-ramp};
-\node[stab] (se) at (10.2,-0.4) {local\\fiat};
+% ===== Panel (a): traditional rail =====
+\node[note, anchor=west, font=\footnotesize\bfseries] (htA) at (0,3.4) {(a) Traditional rail (RTGS / SWIFT)};
+\node[trad] (ta) at (1.4,2.5) {sender};
+\node[trad, right=1.7cm of ta] (tb) {bank rail\\(RTGS/SWIFT)};
+\node[trad, right=1.7cm of tb] (tc) {recipient};
+\draw[->] (ta) -- node[cost, above]{fee + FX} (tb);
+\draw[->] (tb) -- node[cost, above]{} (tc);
+\node[note, below=1.5mm of tb, text=blue!45!black, text width=5.2cm] {asset held $=$ bank deposit,\\ backed by a supervised, insured bank};
+\node[note, right=1.2cm of tc, text width=2.6cm, font=\footnotesize\bfseries, text=blue!45!black] {expected loss\\ on the asset $= 0$};
+% ===== Panel (b): stablecoin circuit =====
+\node[note, anchor=west, font=\footnotesize\bfseries] (htB) at (0,1.0) {(b) Stablecoin circuit (fiat to fiat)};
+\node[stab] (sa) at (1.1,0.0) {fiat};
+\node[stab, right=1.0cm of sa] (sb) {on-ramp};
+\node[hold, right=1.0cm of sb] (sc) {hold coin};
+\node[stab, right=1.0cm of sc] (sd) {off-ramp};
+\node[stab, right=1.0cm of sd] (se) {local fiat};
 \draw[->] (sa) -- (sb);
-\draw[->] (sb) -- node[fee, above]{on-chain} (sc);
+\draw[->] (sb) -- node[cost, above]{on-chain fee} (sc);
 \draw[->] (sc) -- (sd);
 \draw[->] (sd) -- (se);
-\node[fee, below=1mm of sb, text=red!55!black] {fee\\(observable)};
-\node[fee, below=1mm of sd, text=red!55!black] {basis + fee\\(observable)};
-\node[lab, above=0.5mm of sc, text=green!40!black] {$\ell_C$ counterparty (obs.)\\$+$ stress depeg};
-\node[lab, anchor=west, text=green!40!black] at (11.0,-0.4) {stress $=$\\global game};
+% cost labels BELOW each leg, on one clean row, no overlap
+\node[cost, below=1.5mm of sb, text=red!55!black] {platform fee\\(observable)};
+\node[cost, below=1.5mm of sd, text=red!55!black] {basis $+$ fee\\(observable)};
+\node[note, below=1.5mm of sc, text width=3.0cm, text=green!35!black] {$\ell_C$ counterparty (obs.)\\$+\;p_s\times$ stress depeg};
+% the global game annotation, clearly attached to the holding leg
+\node[draw, rounded corners=2pt, fill=green!6, font=\scriptsize, align=center, text=green!35!black,
+      below=1.4cm of sc, text width=3.4cm] (gg) {\textbf{stress depeg} priced by the\\ closed-form \textbf{global game}\\ (run probability $p_s$)};
+\draw[->, green!45!black, dashed] (gg) -- (sc);
 \end{tikzpicture}
-\caption{Two payment workflows. On the traditional rail (a) the payer holds a par-redeemable, insured deposit, so the expected loss on the underlying is zero. On the stablecoin circuit (b) the payer runs fiat to fiat: the on-ramp, on-chain, and off-ramp legs are observable fees (the off-ramp also carries the conversion basis), while the holding leg carries the expected loss, the observable counterparty exposure $\ell_C$ plus the stress depeg, the one piece priced by the closed-form global game.}\label{fig:workflows}
+\caption{Two payment workflows. On the traditional rail (a) the asset the payer briefly holds is a bank deposit, backed by a supervised and insured bank, so its expected loss is zero. On the stablecoin circuit (b) the payer runs fiat to fiat through five legs: the on-ramp and off-ramp platform fees and the on-chain fee are observable, the off-ramp also carries the conversion basis, and the holding leg carries the expected loss, the observable counterparty exposure $\ell_C$ plus the stress depeg, the one piece priced by the closed-form global game through its run probability $p_s$.}\label{fig:workflows}
 \end{figure}
 
 \subsection{Counterparty credit risk}\label{sub:counterparty}
