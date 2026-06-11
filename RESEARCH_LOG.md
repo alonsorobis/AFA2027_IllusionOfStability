@@ -613,3 +613,25 @@ call. main_fable5.pdf 58 pp, IA 10 pp, zero em dashes, no undefined refs.
 
 The author confirmed paper/fable5/ as the canonical working version going forward (the
 previous_main/ tree stays frozen).
+
+## Session 57 (2026-06-11) — Referee test (b) + new closed-game version (Option 3)
+
+Ran the direct reduced-form test of whether the model is needed for the headline number
+(`simulation/scripts/test_reduced_form_depeg.py` → `data/processed/reduced_form_depeg_test.json`).
+Result: the expected depeg loss is recoverable from observables + econometrics without the
+six-moment calibration. Empirical below-par depeg at the USD-pair mid is only 1.3 (USDC) /
+2.1 (USDT) bps over 38,688 hours; the model's baseline component (26.4 / 10.9) is carried by
+the observed off-ramp basis (21 / 12), and the stress component (2.6 / 0.3) equals
+p_s × observed episode depth (0.0108 × 240 / 28). Reduced-form headline ≈ 43.6 / 72.3 against
+the model's 48.9 / 71.2. Conclusion: the global game earns its place through mechanism and
+counterfactuals, not the number. Also: the shared p_s = 96/8856 = 0.0108 is tied to SVB for
+both coins; empirical per-coin frequencies are USDC ≈ 0.001–0.008, USDT ≈ 0.0002.
+
+Author decision: open a parallel **closed-game version** (Option 3) at `paper/closed_game/`
+(sibling of fable5/previous_main; exact copy of fable5, paths retargeted, compiles 58 pp).
+Goal: a Klee-style closed-form global game (linear price impact + uniform noise) delivering
+analytical causal/counterfactual properties and an endogenous per-coin run probability,
+contrasted against econometrics, with the moment-matching calibration removed and all visuals
+kept. Full plan in `paper/closed_game/DESIGN.md`. fable5 stays the canonical submission version;
+this version is exploratory. Next gate: derive the dual-channel closed form (threshold + ell_D +
+comparative statics) before touching prose.

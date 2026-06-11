@@ -1,0 +1,29 @@
+\section{Calibration and the expected loss}\label{sec:calibration}
+
+The estimation target is the joint behaviour of USDC during the March 2023 Silicon Valley Bank episode in hourly secondary market data, supplemented by a baseline-regime window covering normal trading conditions in 2022. The model is the one-class representative-holder specification of Appendix~\ref{app:formal_model}. We estimate a seven-parameter vector by weighted matching of the six moments reported below; the free-parameter vector, the loss function, and the Nelder-Mead optimisation are documented in Appendix~\ref{app:calib_details}, which reports the converged vector $\phi^*$ of \eqref{eq:phi_star} at a final loss of $1.82$. The identification of the calibrated parameters is summarised in Section~\ref{sec:identification} and detailed in Appendix~\ref{app:calib_details}.
+
+\subsection{Data}\label{sub:calibration_data}
+
+The price data is a high-frequency (hourly close) series for the USDC-USD pair.\footnote{Source: CryptoCompare hourly close, accessed from the CryptoCompare public API.} The baseline-regime moments cover calendar year 2022; the stress-regime moments cover the 96-hour window from 22:00 UTC on 2023-03-10 (the SVB statement announcement) to 22:00 UTC on 2023-03-14 (Federal Reserve emergency lending facility announcement). We compute six moments per asset: (i) baseline mean close, (ii) baseline standard deviation of close, (iii) baseline frequency of close below 0.975 (the large-depeg threshold), (iv) stress regime minimum close, (v) stress regime mean absolute depeg in basis points, and (vi) stress frequency of close below 0.975. The empirical values are reported in Table~\ref{tab:moments_targets}.
+
+\begin{table}[H]
+\centering
+\caption{Empirical target moments for the USDC calibration. Baseline moments are computed over calendar year 2022 (hourly close); stress moments over the 96-hour SVB window 2023-03-10 to 2023-03-14.}\label{tab:moments_targets}
+\begin{tabular}{llr}
+\toprule
+Regime & Moment & Value \\
+\midrule
+Baseline & Mean close $\bar p_b$                                 & $1.00001$       \\
+Baseline & Standard deviation of close $\hat\sigma(p_b)$          & $0.000754$      \\
+Baseline & Frequency of close $< 0.975$, $\widehat{\Pr}(p_b<0.975)$ & $0.000$       \\
+\midrule
+Stress   & Minimum close $\min p_s$                              & $0.9022$        \\
+Stress   & Mean absolute depeg $\overline{|p_s-1|}$               & $240.06$\,bps   \\
+Stress   & Frequency of close $< 0.975$, $\widehat{\Pr}(p_s<0.975)$ & $0.396$       \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Calibration result and interpretation}\label{sub:interp}
+
+The calibration converges to a final loss of $L(\phi^*) = 1.82$ at the parameter vector $\phi^*$ reported in \eqref{eq:phi_star} of Appendix~\ref{app:calib_details}. The six moments play different roles in the object the model prices, and we report the fit moment by moment. Two moments are matched within reading tolerance: the baseline large-depeg frequency ($m_3$, zero in both model and data) and the stress mean absolute depeg ($m_5$, $238.7$ against $240.1$ basis points). Two carry residuals we quantify and carry through the paper. The baseline mean price ($m_1$) converges to $0.995$ against an empirical $1.00001$, a residual of roughly 50 basis points below par: the marginal holder in the model converts at intermediate fundamentals given the calibrated convenience yield, so pushing the baseline mean to par would dampen the stress depeg the calibration must also match. Because the baseline depeg component $\ell_{D,b}$ is the component most exposed to this residual, Section~\ref{sec:identification} does not defend its level by the model fit alone but anchors it against observable conversion costs. The stress minimum ($m_4$) reaches $0.975$ against the empirical trough of $0.902$; the literature places that final fall in the secondary market intermediation sector rather than in the payment holder block the model prices, and the two-class extension in the internet appendix maps it onto a market-maker class while leaving the payment holder expected loss essentially unchanged. The remaining two moments sit at the boundary of the object the model prices: the baseline standard deviation ($m_2$, $3.8 \times 10^{-4}$ against $7.5 \times 10^{-4}$) is dominated by high-frequency exchange-clearing noise outside the redemption-coordination problem, and the stress large-depeg frequency ($m_6$, $0.358$ against $0.396$) is reproduced in order, with the model spreading more mass over moderate-stress hours than the data. The full residual diagnostics are in the internet appendix. The structural decomposition reported in Section~\ref{sec:identification} is driven by the well-identified microstructure block and signal noise, with the level of its largest component disciplined externally against observable conversion costs.

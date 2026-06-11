@@ -1,0 +1,73 @@
+\section{Calibration and identification details}\label{app:calib_details}
+
+This appendix collects the mechanics of the calibration summarised in Section~\ref{sec:calibration} and the identification diagnostics behind the expected-loss decomposition reported in Section~\ref{sec:identification}. The free parameter vector, the loss function, and the optimisation are documented first; the Jacobian-based identification check, the effective-rank analysis, and the two robustness panels that support the headline follow.
+
+\subsection{The free parameter vector}\label{sub:free_params}
+
+The free parameter vector has seven entries:
+\begin{equation}\label{eq:phi}
+\phi = (\sigma, \psi, \nu, \mu_q, \zeta, \mu_s, \tau_s),
+\end{equation}
+where $\sigma$ is the signal noise, $(\psi, \nu, \mu_q, \zeta)$ is the secondary market block, and $(\mu_s, \tau_s)$ are the stress-regime prior mean and precision. Two parameters are fixed externally on economic grounds: $\mu_b = 1$ (par by definition of the baseline regime) and $\tau_b = 400$, which implies a baseline fundamental standard deviation of $0.05$, roughly two orders of magnitude above the empirical baseline price standard deviation of $0.0008$ but well below the calibrated signal noise $\sigma = 0.194$, so the holder posterior is dominated by $\sigma$ rather than by the prior dispersion. The headline is insensitive to $\tau_b$ within a wide range around this value (internet appendix).
+
+\subsection{Loss function}\label{sub:loss}
+
+The loss is the weighted sum of squared moment errors:
+\begin{equation}\label{eq:loss}
+L(\phi) = \sum_{j=1}^{6} w_j (m_j(\phi) - \hat m_j)^2,
+\end{equation}
+where $m_j(\phi)$ is the model moment under $\phi$ from a Monte Carlo simulation, $\hat m_j$ is the data target, and $w_j$ is the weight. Weights are chosen so that each moment contributes a comparable amount to the unweighted loss at the calibration anchor. A weighting proportional to the inverse sampling variance of the empirical moments would not serve the object here: the baseline regime is quasi-deterministic by construction, so its moments carry near-zero sampling variance and would absorb effectively all the weight, concentrating the fit on the calm regime at the expense of the stress regime the model is built to price; the scale normalisation keeps both regimes informative. The Monte Carlo uses $N=300$ scenario draws for the main pass and a Nelder-Mead simplex search with up to 80 iterations on a warm-start parameter vector obtained from a $N=100$ warm-up pass.
+
+\subsection{Optimisation results}\label{sub:opt_results}
+
+The main pass converges to a final loss of $L(\phi^*) = 1.82$. The calibrated parameter vector is:
+\begin{equation}\label{eq:phi_star}
+\phi^* = \begin{pmatrix}
+\sigma \\ \psi \\ \nu \\ \mu_q \\ \zeta \\ \mu_s \\ \tau_s
+\end{pmatrix} = \begin{pmatrix}
+0.194 \\ 0.275 \\ 1.741 \\ 0.053 \\ 0.507 \\ 0.212 \\ 9.88
+\end{pmatrix}.
+\end{equation}
+The implied moments at $\phi^*$ are $m_1 = 0.995$, $m_2 = 3.8 \times 10^{-4}$, $m_3 = 0.000$, $m_4 = 0.975$, $m_5 = 238.7$ bps, $m_6 = 0.358$. Against the targets of Table~\ref{tab:moments_targets}, two moments are matched within reading tolerance ($m_3$ and $m_5$), two carry quantified residuals ($m_1$, 50 basis points below the par target; $m_4$, $0.975$ against the $0.902$ trough), and two are not matched ($m_2$, at half the empirical baseline dispersion, and $m_6$, $0.358$ against $0.396$). The moment-by-moment interpretation of the fit is in Section~\ref{sub:interp} of the main text, with the residual diagnostics in the internet appendix; the level of the baseline depeg component, the component most exposed to the $m_1$ residual, is anchored against observable conversion costs in Section~\ref{sec:identification}.
+
+\subsection{USDT calibration}\label{sub:usdt_calibration}
+
+The decomposition for USDT reported in Section~\ref{sec:identification} applies the same machinery to the May 2022 Terra-fallout episode as the stress anchor (97 hours, minimum close 0.9751, mean absolute depeg 27.7 basis points). The issuer parameters are fixed externally at $h = 0.02$ and $\xi = 0.30$, reflecting Tether's heavier counterparty profile relative to Circle's; the structural microstructure block, signal noise, and regime parameters are re-estimated. The calibration converges to a final loss of $0.16$ at
+\begin{equation}\label{eq:phi_star_usdt}
+\phi^{\text{USDT},\star} = (\sigma, \psi, \nu, \mu_q, \zeta, \mu_s, \tau_s) = (0.237, 0.108, 4.000, 0.022, 0.453, 0.231, 7.98).
+\end{equation}
+The parameter directions match the structural priors in Section~\ref{sub:not_homogeneous} of the main text: USDT exhibits lower price-impact scale $\psi$ and depth-erosion $\zeta$ (deeper, more resilient secondary market), convexity $\nu$ at the upper bound of its admissible range (flat dynamics until depth saturates), and higher signal noise $\sigma$ (broad retail user base across emerging markets). The milder May 2022 episode is absorbed mainly through the low price-impact scale rather than through the stress-regime mean, which is close to the USDC value; the secondary market clears the conversions the Terra fallout generated with far smaller realised discounts. These directions generate the inverted composition of the USDT expected loss relative to USDC reported in Section~\ref{sec:identification}: USDT's small depeg loss leaves its heavier counterparty profile dominant. The stress trough reads as for USDC: the model's deepest stress price for USDT ($0.997$) sits above the empirical minimum close of $0.9751$, a residual the two-class extension in the internet appendix attributes to the secondary market intermediation sector rather than to the payment holder.
+
+\subsection{Jacobian sensitivity at $\phi^*$}\label{sub:jacobian}
+
+We compute the finite-difference Jacobian of the six moments with respect to the seven parameters at $\phi^*$, using a centred difference with step $0.05$ times the bound width of each parameter. The Jacobian is normalised by dividing each column by the corresponding $|\phi^*_j|$ and each row by the corresponding $|\hat m_j|$ where $|\hat m_j| > 10^{-8}$. The per-parameter identification strength is the L2 norm of the corresponding column of the normalised Jacobian.
+
+\begin{table}[H]
+\centering
+\caption{Per-parameter identification strength at $\phi^*$. Strength is the L2 norm of the parameter's column of the normalised moment Jacobian (Section~\ref{sub:jacobian}); parameters with strength above one are classified as well identified.}\label{tab:identification}
+\begin{tabular}{lrl}
+\toprule
+Parameter & Strength & Classification \\
+\midrule
+$\nu$ (price-impact convexity)  & 13.98 & well identified \\
+$\sigma$ (signal noise)          & 3.11  & well identified \\
+$\mu_q$ (congestion penalty)     & 2.43  & well identified \\
+$\zeta$ (depth erosion)          & 2.25  & well identified \\
+$\psi$ (price-impact scale)      & 1.61  & well identified \\
+$\mu_s$ (stress regime mean)     & 0.65  & marginally identified \\
+$\tau_s$ (stress regime precision) & 0.24 & marginally identified \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Five of the seven parameters are strongly identified. The microstructure block ($\psi, \nu, \mu_q, \zeta$) and the signal noise $\sigma$ are pinned by the data with strengths between 1.61 and 13.98. These five parameters jointly govern the redemption decision of the representative payment holder, the agent whose expected loss enters the payments cost comparison in Section~\ref{sec:empirical_comparison}. The two stress-regime parameters $\mu_s$ and $\tau_s$ are marginally identified, with strengths of 0.65 and 0.24. They enter the moments through the deepest minutes of the stress-regime price quantile, where empirical dispersion is generated by the market-maker sector documented in \citet{ma_zeng_zhang_2025} and \citet{lyons_viswanath_natraj_2023} and by the leveraged-trading channel in \citet{gorton_klee_ross_ross_vardoulakis_2026} rather than by the payment holder. The under-identification of those two parameters from a 96-hour stress window is therefore a feature of the parsimonious one-class specification used for the payments headline: the data window prices what the payment holder actually bears and leaves the secondary market intermediation dimension to the literature-anchored two-class robustness reported in the internet appendix.
+
+\subsection{Effective rank and condition number}\label{sub:svd}
+
+The SVD of the normalised Jacobian yields six singular values (one fewer than the number of parameters, reflecting that one column has weak average response). The values are $\{14.72, 1.37, 0.70, 0.005, 0.002, 0.000\}$. Three are above the conventional $0.01$ threshold; the remaining three are below. The effective rank is therefore $3$, and the condition number on the well-resolved subspace is $\kappa = 14.72/0.70 \approx 21$.
+
+The data effectively pin three principal combinations of parameters, not the seven individual parameters. The three well-resolved combinations correspond to the microstructure block plus signal noise of the payment holder, the agent whose expected loss is priced into the payments cost comparison in Section~\ref{sec:empirical_comparison}. The three poorly resolved combinations correspond to interactions among the stress-regime parameters and to baseline-noise moments that the parsimonious one-class specification does not target (internet appendix). This is the subspace through which the secondary market intermediation sector enters the stress price (Section~\ref{sub:jacobian}); none of those primitives belongs to the payment holder block, so the under-identification does not bias the headline. Two robustness panels in the internet appendix confirm the point: perturbing the marginally identified $(\mu_s, \tau_s)$ across their interior moves the headline by less than three basis points, and the externally fixed baseline-prior precision $\tau_b$ leaves it unchanged at the calibrated value and tighter, raising it by about five basis points only when loosened to twice the calibrated baseline dispersion.
+
+\subsection{Bootstrap standard errors of the two expected losses}\label{sub:bootstrap}
+
+Because each expected loss is calibrated to a single stress window (the 96-hour March 2023 episode for USDC and the 97-hour May 2022 episode for USDT), we quantify the sampling uncertainty of each by a circular block bootstrap of its window. In each of 100 replications we resample the hourly secondary price in twelve-hour blocks, recompute the three stress moments, re-run the calibration warm-started at $\phi^*$, and recompute the expected loss; the baseline moments and the Monte Carlo seeds are held fixed so the spread reflects data resampling rather than simulation noise. The USDC replications are centred on the point estimate (mean $48.7$ against a point value of $48.9$) with a standard deviation of $2.3$ basis points and a $90\%$ percentile interval of $[44.7, 51.7]$; the USDT replications give a mean of $70.4$ against a point value of $71.2$, a standard deviation of $2.5$ basis points, and a $90\%$ interval of $[65.5, 72.8]$. Each expected loss is thus pinned to within about two and a half basis points of its point value by its stress-window data. The bootstrap resamples the depeg window with the counterparty parameters $(h,\xi)$ held fixed; the wider range that varying those externally set parameters implies is reported separately in the internet appendix.
