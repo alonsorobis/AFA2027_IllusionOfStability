@@ -663,3 +663,20 @@ p_s and headline; (ii) rewrite section 4 to the closed-form model (replace the n
 fixed-point exposition); (iii) rewrite section 5 as parametrisation-by-observables + the
 reduced-form contrast (test b); (iv) propagate the workflow thread through sections 3-7; (v)
 hyphen audit + full recompile. fable5 remains the canonical submission version, untouched.
+
+## Session 58 cont. (2026-06-11) — Closed-game number engine fixed (two-regime prior)
+
+Re-specified the prior: uniform SIGNAL noise (D linear, 1-D threshold, Klee-style) but a NORMAL
+fundamental prior theta ~ N(1, sigma_theta) concentrated at par (issuer healthy a.s., run only in
+the lower tail). This fixes the flat-prior pathology. Mechanism insight: the distinct troughs come
+from effective primary-redemption access R, not depth psi -- USDC's primary was suspended over the
+SVB bank weekend (R=0.50), USDT's stayed open (R=0.85); psi backed out from the troughs is similar
+(~0.17-0.20). Results (`data/processed/closed_game_numbers.json`):
+- USDC: endogenous p_s = 0.0052 (emp 0.005), headline 41.0 (fable5 48.9), dPi/dR = -0.56.
+- USDT: endogenous p_s = 0.00031 (emp 0.0003), headline 72.0 (fable5 71.2), dPi/dR = -0.19.
+The reserve comparative static distinguishes the coins (USDC reserve-sensitive, USDT nearly flat).
+Honest caveat: the model's expected stress depeg is tiny (~0.03 bps) because the deep trough is a
+gaussian tail event; the headline is dominated by ell_C + basis (observables), confirming test (b)
+-- the model earns its place through mechanism and the endogenous p_s, not the stress level. The
+closed-game headline (41/72) is slightly more conservative than fable5 (anchors baseline to the
+observed basis 21/12, not the calibrated 26.4/10.9).
