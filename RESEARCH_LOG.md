@@ -596,3 +596,20 @@ This closes the session-53 action plan in full: bootstrap symmetry done (this se
 inverse-variance weighting ruled out with an A3 justification sentence (session 53);
 expected-loss terminology and the full payment circuit (session 54). The keep-awake
 process (PID 22948) that held the machine awake during the runs is terminated.
+
+## Session 56 (2026-06-11) — Roadmap trim + hyphen audit; fable5 confirmed canonical
+
+Cut the appendix-by-appendix listing from the intro roadmap. Ran the hyphen audit under
+the author's rule (drop the hyphen wherever the compound reads correctly without it; keep
+only where a human near-always hyphenates): separated open noun-compounds across the tree
+(secondary market, instant payment, correspondent banking, central bank, payment
+holder/use/system, financial stability, working capital, balance sheet, commercial bank,
+foreign exchange, stock price, real economy, equity market, primary market, retail
+payment, non-numerical "basis point"); kept cross-border, all-in, crypto rail terms,
+numericals, proper names/pairs, field terms, adjective+participle compounds, and per-X.
+A handful of attributive compounds (use-case, real-world, emerging-market, developed-market,
+end-user, deposit-taking, near-zero, low-cost, near-free) were left for an explicit author
+call. main_fable5.pdf 58 pp, IA 10 pp, zero em dashes, no undefined refs.
+
+The author confirmed paper/fable5/ as the canonical working version going forward (the
+previous_main/ tree stays frozen).
