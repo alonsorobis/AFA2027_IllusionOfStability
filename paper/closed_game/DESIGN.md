@@ -83,10 +83,18 @@ Appendices: closed-form proofs; cost data. No identification appendix.
 
 ## Work plan (phases)
 
-1. **Analytics first (gate).** Derive the dual-channel closed-form threshold and ell_D on paper
-   (sympy where useful). If the dual channel breaks the closed form, decide: (a) drop primary
-   redemption into the secondary as one channel with a kink, or (b) keep a one-line implicit
-   threshold. This gate decides feasibility before any prose is touched.
+1. **Analytics first (gate). PASSED 2026-06-11** (`simulation/scripts/closed_form_gate.py`, sympy-verified).
+   Under theta ~ U[A,B], eps ~ U[-1,1], p_sec = 1 - psi·max(D-R,0):
+   - `ell_D = psi*(-3AR + 3A - R^3*sigma + 3Rs - 3s + sigma) / (3(A-B))` — closed form.
+   - `d ell_D/dR = psi*(-A - R^2*sigma + s)/(A-B) < 0` — analytical reserve comparative static
+     (deeper reserves lower the expected depeg loss; was a simulation result in fable5).
+   - `p_s = (A + 2R*sigma - s - sigma)/(A-B)`, `d p_s/dR = 2*sigma/(A-B) < 0` — endogenous
+     per-coin stress probability in closed form (Klee-style; replaces the shared 96/8856).
+   - Threshold s*: a single 1-D implicit equation F(s*)=0 (log term from R/D prorating), not a
+     7-parameter fixed point; comparative statics by the implicit function theorem.
+   - Bonus: the linear model's baseline mid-depeg is exactly 0, so the baseline component is the
+     observable off-ramp basis (matches test (b)); the model prices only the coordination/stress
+     piece. Gate clears feasibility; proceed to parametrisation by observables.
 2. Rewrite §4 with the closed-form model; rewrite §5 as parametrisation-by-observables +
    econometric contrast; delete the calibration/identification machinery.
 3. Recompute the headline from the observable parametrisation; confirm it tracks 48.9 / 71.2.
