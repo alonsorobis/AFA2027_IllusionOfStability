@@ -1,82 +1,76 @@
-\section{A global game of stablecoin redemption}\label{sec:model}
+\section{A closed-form global game of stablecoin redemption}\label{sec:model}
 
-This section formalises the depeg channel of Section~\ref{sec:risk_factors} as a global game and states the equilibrium properties the calibration relies on. We use a one-class representative-holder specification; the multi-class generalisation collapses to it when the population concentrates on a single class, and a two-class robustness extension is reported in the internet appendix. Proofs and the numerical solver are in Appendix~\ref{app:proofs}.
+This section formalises the stress depeg piece of the holding leg as a global game in the closed-form tradition of \citet{klee_etal_2026_fragility}. Uniform signal noise makes the redeeming mass linear in the fundamental, so the equilibrium threshold solves a single one-dimensional condition and the expected depeg loss, the stress probability, and the reserve comparative static are analytical. The model prices the one piece of the circuit no observable conversion cost reveals; the counterparty and baseline pieces are read from data in Section~\ref{sec:risk_factors}. Proofs are in Appendix~\ref{app:proofs}.
 
 \subsection{Primitives and information}\label{sub:model_primitives}
 
-There is a continuum of homogeneous holders of unit mass. The latent issuer fundamental is $\theta \in \mathbb{R}$, drawn from a normal prior $\mathcal{N}(\mu_\theta, 1/\tau)$ with regime-dependent mean and precision; the regime $\rho \in \{b, s\}$ is drawn from a Bernoulli with $\mathbb{P}(\rho=s) = p_s$. In the baseline regime $\mu_\theta = \mu_b$ and $\tau = \tau_b$, fixed at $\mu_b = 1$ and $\tau_b = 400$ so the baseline is quasi-deterministic at par; the stress-regime $\mu_s, \tau_s$ are estimated. Each holder $i$ observes a private signal
+There is a continuum of homogeneous holders of unit mass. The latent issuer fundamental is $\theta$, drawn from a normal prior $\theta \sim \mathcal{N}(1, \sigma_\theta^2)$ concentrated at par: the issuer is healthy almost surely, and a run occurs only in the lower tail. Each holder $i$ observes a private signal with \emph{uniform} noise,
 \begin{equation}\label{eq:signal}
-s_i = \theta + \sigma \varepsilon_i, \qquad \varepsilon_i \sim \mathcal{N}(0,1),
+s_i = \theta + \sigma \varepsilon_i, \qquad \varepsilon_i \sim \mathcal{U}[-1, 1],
 \end{equation}
-with $\sigma > 0$ the signal noise, so the posterior is $\theta \mid s_i \sim \mathcal{N}(s_i, \sigma^2)$ \citep{morris_shin_1998}. The issuer holds primary reserves $R$ and asset value $A$, with default hazard $h \in [0,1]$ and loss given default $\xi \in [0,1]$. The secondary market has baseline depth $M$, price-impact scale $\psi > 0$, convexity $\nu > 1$, congestion penalty $\mu_q$, and depth-erosion $\zeta$. The per-redemption transaction cost is $\phi$ and the convenience yield of holding the coin is $\omega$.
+so the posterior $\theta \mid s_i$ is uniform on $[s_i - \sigma, s_i + \sigma]$. The issuer redeems at par up to liquid reserves $R$; the secondary market has linear price impact $\psi > 0$. The per-redemption transaction cost is $\phi$, the convenience yield of holding the coin is $\omega$, and the counterparty term is $\xi h$, read from market proxies in Section~\ref{sub:counterparty}.
 
 \subsection{Redemption and the secondary price}\label{sub:model_secondary}
 
-Each holder chooses to redeem or hold. By symmetry and the monotone-likelihood-ratio property of the signal, the equilibrium is in threshold strategies, redeem if and only if $s_i < s^*$, so the mass that redeems at fundamental $\theta$ is
+The equilibrium is in threshold strategies, redeem if and only if $s_i < s^*$. Under uniform noise the mass that redeems at fundamental $\theta$ is \emph{linear} on the transition interval,
 \begin{equation}\label{eq:D}
-D(\theta; s^*) = \Phi\!\left(\frac{s^* - \theta}{\sigma}\right),
+D(\theta; s^*) = \tfrac{1}{2} + \frac{s^* - \theta}{2\sigma}, \qquad \theta \in [s^*-\sigma,\, s^*+\sigma],
 \end{equation}
-with $\Phi$ the standard normal CDF. Redemption runs through two channels. Each holder first attempts primary redemption at the issuer, paid at par up to liquid reserves $R$; the unmet demand spills into the secondary market,
-\begin{equation}\label{eq:U}
-U(D) = \max\{D-R, 0\},
-\end{equation}
-which clears at
+equal to $1$ below the interval and $0$ above. Redemption runs through two channels: each holder first redeems at par up to reserves $R$, and unmet demand $U(D) = \max\{D - R,\, 0\}$ spills into the secondary market, which clears at
 \begin{equation}\label{eq:psec}
-p^{sec}(D) = \min\!\left\{1, \, \max\!\left[\underline{p}, \, 1 - \psi\!\left(\frac{U(D)}{\widetilde M(D)}\right)^\nu - \mu_q q\right]\right\}, \qquad
-\widetilde M(D) = \frac{M}{1 + \zeta\, U(D)/M},
+p^{sec}(D) = \max\!\left\{\underline{p},\; 1 - \psi\, U(D)\right\}.
 \end{equation}
-where $\widetilde M(D)$ is the depth that itself erodes as unmet demand grows, $\underline p$ a price floor, and $q$ the rail queue ratio (zero in the specification used here). The price falls convexly ($\nu>1$) in unmet redemption relative to depth, the feature the mechanism check of Section~\ref{sub:mechanism_check} tests.
+The price falls linearly in unmet redemption relative to depth $1/\psi$, with $\underline p$ a floor. The boundary at which the secondary first opens, $D = R$, is reached at the fundamental
+\begin{equation}\label{eq:theta_s}
+\theta_s = s^* - \sigma\,(2R - 1),
+\end{equation}
+below which the coin trades below par. Linearity is the modelling choice that buys the closed form; the convex generalisation is numerically close and is discussed in Appendix~\ref{app:proofs}.
 
-\subsection{Payoffs and equilibrium}\label{sub:model_equilibrium}
+\subsection{Payoffs and the one-dimensional threshold}\label{sub:model_equilibrium}
 
-Conditional on $\theta$ and the aggregate $D$, the payoff to redeeming is
+Conditional on $\theta$ and the aggregate $D$, the payoff to redeeming is par on the share met from reserves and the depressed secondary price on the rest,
 \begin{equation}\label{eq:VR}
 V_R(D) = \min\!\left\{1, \tfrac{R}{D}\right\} + \left(1 - \min\!\left\{1, \tfrac{R}{D}\right\}\right) p^{sec}(D) - \phi,
 \end{equation}
-par on the share met from reserves and the depressed secondary price on the rest, and the payoff to holding is
+and the payoff to holding is
 \begin{equation}\label{eq:VH}
-V_H(\theta) = \theta - c_q q + \omega - \xi h.
+V_H(\theta) = \theta + \omega - \xi h.
 \end{equation}
-The issuer counterparty loss $\xi h$ enters the value of \emph{holding}, not the realised price. This placement is the substantive modelling choice: a counterparty loss netted from the realised price would be common to redeeming and holding and would cancel in the indifference condition below, leaving the threshold unmoved. In $V_H$ it lowers the value of holding, raises the conversion mass, and feeds the coordination channel, so a heavier counterparty profile both adds a loss component and tightens the run incentive; at the calibrated parameters this second, coupling effect is second-order relative to the additive component (Section~\ref{sec:identification}). The marginal holder at $s_i = s^*$ is indifferent in expectation over $\theta$ given the posterior $\mathcal{N}(s^*, \sigma^2)$:
+The counterparty term $\xi h$ enters the value of \emph{holding}, not the realised price: netted from the price it would be common to both actions and cancel in the indifference condition, leaving the threshold unmoved; in $V_H$ it lowers the value of holding and feeds the coordination channel. The marginal holder at $s_i = s^*$ is indifferent in expectation over the uniform posterior $\theta \mid s^* \sim \mathcal{U}[s^*-\sigma, s^*+\sigma]$,
 \begin{equation}\label{eq:F}
-F(s^*) := \mathbb{E}_{\theta \mid s_i = s^*}\!\left[V_R(D(\theta; s^*)) - V_H(\theta)\right] = 0.
+F(s^*) := \mathbb{E}_{\theta \mid s^*}\!\left[V_R(D(\theta; s^*)) - V_H(\theta)\right] = 0.
 \end{equation}
-This is the endogenous fixed point. The threshold $s^*$ enters $F$ both as the conditioning event of the posterior and through the aggregate mass $D(\theta; s^*)$ that all holders applying the same threshold imply; the two-way dependence is the run, and it admits no closed form.
+This is a single equation in the single unknown $s^*$. The posterior is local and does not involve the fundamental prior, so the threshold is a Laplacian object pinned by the payoff primitives $(R, \psi, \omega, \phi, \xi h, \sigma)$; the prior $\mathcal{N}(1,\sigma_\theta^2)$ enters only the unconditional frequency of each $\theta$, and hence the stress probability and the expected loss below. Equation~\eqref{eq:F} carries a single logarithmic term from the $R/D$ prorating and is solved as a one-dimensional root, in contrast to the multi-parameter fixed point a calibration to price moments would require.
 
-\subsection{Existence, uniqueness, and comparative statics}\label{sub:model_propositions}
+\subsection{Analytical properties}\label{sub:model_propositions}
 
-Three propositions give the model the properties the calibration relies on; all are proved in Appendix~\ref{app:proofs}.
-
-\begin{proposition}[Existence and uniqueness]\label{prop:existence}
-Assume $\nu > 1$, $\sigma > 0$, $0 < R < 1$, $M>0$, and that the best-response operator $T$ on threshold profiles is a contraction in the sup norm. Then \eqref{eq:F} has a unique solution $s^* \in \mathbb{R}$.
+\begin{proposition}[Threshold]\label{prop:existence}
+For $\sigma>0$, $0<R<1$, $\psi>0$, equation~\eqref{eq:F} has a unique root $s^* \in [\,1-\sigma,\,1+\sigma\,]$. Comparative statics follow from the implicit function theorem, $\partial s^*/\partial R = -F_R/F_{s^*}$.
 \end{proposition}
 
-The proposition gives a single equilibrium threshold $s^*$ at any admissible parameter vector, so the conversion mass $D^*(\theta)$ is determined at each fundamental and the calibration recovers one expected loss per issuer. The contraction condition is verified numerically at the calibrated parameters.
+\begin{proposition}[Endogenous stress probability]\label{prop:ps}
+The probability of the stress regime, the event $D > R$ that the coin trades below par, is
+\begin{equation}\label{eq:ps}
+p_s = \Pr(\theta < \theta_s) = \Phi\!\left(\frac{\theta_s - 1}{\sigma_\theta}\right),
+\qquad \frac{\partial p_s}{\partial R} = \frac{2\sigma}{\sigma_\theta}\,\phi\!\left(\tfrac{\theta_s-1}{\sigma_\theta}\right)\!\cdot\!\frac{\partial \theta_s}{\partial R} < 0,
+\end{equation}
+so deeper primary-redemption access lowers the run probability. This is the run probability of \citet{klee_etal_2026_fragility}, here endogenous and specific to each issuer rather than a frequency shared across coins.
+\end{proposition}
 
 \begin{proposition}[Reserve comparative static]\label{prop:reserves}
-At the equilibrium $s^*$, $\partial D^*/\partial R \geq 0$ in the strict interior of the parameter space.
+The expected depeg loss $\ell_D = \mathbb{E}_\theta[D(1-p^{sec})]\cdot 10^4$ is closed form, and $\partial \ell_D/\partial R < 0$ in the interior: deeper liquid reserves lower the expected depeg loss. Under a uniform fundamental prior the integral is polynomial; under the normal prior it is a truncated-moment expression in $\Phi$ and $\phi$.
 \end{proposition}
 
-A deeper liquid reserve sustains a higher secondary price at any conversion volume, which raises the value of converting and so weakly raises the equilibrium conversion mass. This is the reserve-quality channel of \citet{ma_zeng_zhang_2025}. The sign reads as the opposite of the bank-run intuition, and the difference is worth stating rather than leaving implicit. In \citet{goldstein_pauzner_2005_demand_deposits} stronger fundamentals shrink the run region because withdrawal is destructive: the deposit contract liquidates assets at a loss and late claimants stand behind early ones, so safety means fewer agents running. Redemption here is not destructive withdrawal but conversion at a price. More par capacity makes exit safer, so weakly more holders take it, and what deeper reserves reduce is not the volume of conversion but its cost: a larger share clears at par and the spillover clears against a higher secondary price. The conversion mass $D^*$ is therefore not the policy object; the priced loss is. Numerically, at the calibrated parameters the expected loss falls monotonically in $R$ while the conversion mass rises: re-solving the model on a reserve grid from $R=0.4$ to $R=0.8$ moves $\Pi_{\text{risk}}$ from 63.4 to 47.0 basis points for USDC, with the conditional stress depeg falling from 462 to 102 basis points, and from 71.3 to 71.2 for USDT; USDC's baseline conversion mass rises from 0.485 to 0.497 over the same grid. So $\partial \Pi_{\text{risk}}/\partial R < 0$ holds throughout the grid even as $\partial D^*/\partial R \geq 0$, and a supervisor should read Proposition~\ref{prop:reserves} jointly with that comparative static: liquidity requirements lower the holder's expected loss precisely by making redemption safe enough that more of it happens at par.
-
-\begin{proposition}[Convenience-yield comparative static]\label{prop:convenience}
-At the equilibrium $s^*$, $\partial D^*/\partial \omega < 0$ in the strict interior of the parameter space.
-\end{proposition}
-
-A higher payment use convenience yield raises the value of holding and so lowers the equilibrium conversion mass: a more useful stablecoin retains holders even at marginally lower fundamentals. This is the adoption-fragility channel of \citet{bertsch_2025_adoption_fragility}.
-
-Together the two comparative statics formalise the claim of Section~\ref{sub:not_homogeneous} that reserve composition and payment use are primitives that move the priced expected loss, not stylistic differences between issuers.
+The sign reads opposite to the bank-run intuition, and the difference is worth stating. In \citet{goldstein_pauzner_2005_demand_deposits} stronger fundamentals shrink the run region because withdrawal is destructive. Redemption here is conversion at a price, not destructive withdrawal: more par capacity makes exit safer, so the conversion mass weakly rises, but what deeper reserves reduce is the \emph{cost} of conversion, because a larger share clears at par and the spillover clears against a higher secondary price. The priced object is the loss, not the mass. A supervisor reads Proposition~\ref{prop:reserves} accordingly: liquidity requirements lower the holder's expected loss precisely by making redemption safe enough that more of it happens at par.
 
 \subsection{The expected loss}\label{sub:what_it_delivers}
 
-The output of the model, for each issuer under its own calibration, is three expected per-unit losses in basis points,
-\begin{align}
-\ell_C &= h \cdot T \cdot \xi \cdot 10^4, \qquad T = 1,\label{eq:ellC} \\
-\ell_{D,b} &= \mathbb{E}_b\!\left[D(\theta; s^*)\,(1 - p^{sec}(D(\theta; s^*)))\right] \cdot 10^4,\label{eq:ellDb} \\
-\ell_{D,s} &= \mathbb{E}_s\!\left[D(\theta; s^*)\,(1 - p^{sec}(D(\theta; s^*)))\right] \cdot 10^4,\label{eq:ellDs}
-\end{align}
-where $\mathbb{E}_\rho$ is the expectation under regime $\rho$. The counterparty component $\ell_C$ is the reduced-form credit term of Section~\ref{sub:counterparty}, evaluated at the one-year exposure window $T=1$ of the continuous-balance holder defined there and independent of the coordination stage; the two depeg components are the structural output of the global game. Their probability-weighted sum is the expected loss the holder bears,
-\begin{equation}\label{eq:total_risk_premium}
-\Pi_{\text{risk}} = \ell_C + (1-p_s)\,\ell_{D,b} + p_s\,\ell_{D,s},
+The model delivers, for each issuer, the stress depeg loss in basis points,
+\begin{equation}\label{eq:ellDs}
+\ell_{D,s} = \mathbb{E}_\theta\!\left[D(\theta; s^*)\,\bigl(1 - p^{sec}(D(\theta; s^*))\bigr)\right] \cdot 10^4,
 \end{equation}
-which we add to the on-chain transfer fee. Section~\ref{sec:calibration} calibrates this expected loss separately for the two stablecoins.
+the probability-weighted depeg over the fundamental prior. The counterparty term $\ell_C = h\,\xi\cdot 10^4$ and the baseline depeg $\ell_{D,b}$, the cost of converting under normal conditions, are observable (Section~\ref{sec:risk_factors}): the linear model has zero baseline mid-depeg by construction, so $\ell_{D,b}$ is the observed off-ramp basis rather than a model output. The holding leg's expected loss is the sum
+\begin{equation}\label{eq:total_risk_premium}
+\Pi_{\text{risk}} = \underbrace{\ell_C}_{\text{observable}} + \underbrace{\ell_{D,b}}_{\text{observable basis}} + \underbrace{\ell_{D,s}}_{\text{closed-form game}},
+\end{equation}
+which we add to the on-ramp, on-chain, and off-ramp fees of the circuit. Section~\ref{sec:calibration} parametrises the model by observables and contrasts the closed form with the reduced-form evidence.

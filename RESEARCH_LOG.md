@@ -680,3 +680,30 @@ gaussian tail event; the headline is dominated by ell_C + basis (observables), c
 -- the model earns its place through mechanism and the endogenous p_s, not the stress level. The
 closed-game headline (41/72) is slightly more conservative than fable5 (anchors baseline to the
 observed basis 21/12, not the calibrated 26.4/10.9).
+
+## Session 58 cont. (2026-06-11) — Closed-game core rewrite (sections 3-5, appendix B)
+
+Rewrote the closed-game paper core to the closed-form methodology, compiles at 49 pp, 0 undefined
+refs, 0 em dashes:
+- Section 4 (model): closed-form global game (uniform signal noise -> linear D, dual channel,
+  1-D threshold, linear secondary impact, endogenous p_s, analytical reserve comparative static).
+  Three propositions replace the numerical fixed-point exposition.
+- Section 5 (was calibration): "Parametrisation by observables" -- the observable table
+  (R, psi from trough, sigma, sigma_theta, h, xi), the endogenous p_s matching the empirical
+  per-coin frequency, and the reduced-form contrast (closed-form 41/72 vs reduced 43.6/72.3).
+- Section 5 (decomposition): headline 42/72, baseline = observed basis, stress = model x p_s;
+  new figure fig_decomp_closed_game.pdf (USDC 42 / USDT 72). Identification/Jacobian/bootstrap
+  machinery removed.
+- Appendix B: closed-form proofs (existence/1-D threshold, endogenous p_s, reserve static) +
+  reduced-form benchmark. Appendix A3 (7-parameter calibration details) dropped from the build.
+- Section 3 + intro: workflow thread propagated (holding leg = counterparty + baseline + stress).
+
+OPEN DECISION for the author (blocks Section 6): the headline closed-game is ~42/72, but Section 6
+(use cases) still carries the fable5 48.9/71.2 numbers AND there is a first-order modelling question
+to settle together -- whether the baseline depeg ell_D,b (set to the observed basis ~21/12 in the
+closed-game decomposition) double-counts the destination basis b_dest already added in the corridor
+circuit. fable5 treated them as distinct legs (USD par leg vs local-currency leg) with an explicit
+anti-double-counting paragraph; in the closed-game they coincide numerically, which needs a clean
+resolution: either (a) baseline depeg is an expected loss of the holding leg (distinct from the
+circuit's off-ramp basis, fable5 view), or (b) it is the off-ramp conversion fee of the circuit and
+should not also sit in Pi_risk. Section 6 is left unrecalculated pending this decision.
