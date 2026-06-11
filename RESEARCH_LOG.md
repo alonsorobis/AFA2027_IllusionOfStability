@@ -576,3 +576,23 @@ Two substantive changes from the author's comment list, plus intro/abstract edit
 3. Abstract corrected (counterparty read from reserve quality, only depeg priced by the game; the earlier "price both with a global game" was wrong), 153 words, two central-bank decisions added; intro trimmed (cut the framework-not-tied and two-episodes passages and the standalone corridor paragraph, dropped the premature SEPA reference and the Figure 1 preview clause) and the closing recast to avoid repeating the abstract verbatim.
 
 main_fable5.pdf 58 pp, internet_appendix_fable5.pdf 10 pp, clean, no undefined refs. Bootstraps still running for tomorrow.
+
+## Session 55 (2026-06-11) — Bootstrap integration, action plan closed
+
+The two block bootstraps (session 53) completed overnight, 100 replications each:
+- USDC: boot mean 48.7, SE 2.3 bps, 90% CI [44.7, 51.7] (point 48.9). The 100-rep
+  interval is slightly wider on the lower tail than the earlier 30-rep [46.0, 52.0],
+  which had understated it.
+- USDT: boot mean 70.4, SE 2.5 bps, 90% CI [65.5, 72.8] (point 71.2). First stress-window
+  standard error for the counterparty-dominant coin, symmetric with USDC; it resamples
+  the May-2022 depeg window with (h, xi) fixed, so the wider (h, xi) band stays in the IA.
+
+A3 §bootstrap rewritten to cover both coins at 100 reps; §5 robustness sentence updated to
+"about two and a half basis points on each expected loss, 90% intervals [45,52] USDC /
+[65,73] USDT." No stale figures remain (verified: no "30 replications", "2.1", "[46,52]",
+"49.2"). main_fable5.pdf 58 pp, IA 10 pp, clean.
+
+This closes the session-53 action plan in full: bootstrap symmetry done (this session);
+inverse-variance weighting ruled out with an A3 justification sentence (session 53);
+expected-loss terminology and the full payment circuit (session 54). The keep-awake
+process (PID 22948) that held the machine awake during the runs is terminated.
