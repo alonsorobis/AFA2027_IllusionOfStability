@@ -635,3 +635,31 @@ contrasted against econometrics, with the moment-matching calibration removed an
 kept. Full plan in `paper/closed_game/DESIGN.md`. fable5 stays the canonical submission version;
 this version is exploratory. Next gate: derive the dual-channel closed form (threshold + ell_D +
 comparative statics) before touching prose.
+
+## Session 58 (2026-06-11) — Closed-game phase 2: workflow narrative + presentation; numbers WIP
+
+Phase 2 of the closed-game version. Three deliverables:
+1. Number engine `simulation/scripts/closed_game_numbers.py` (solves the 1-D threshold, gives
+   endogenous p_s, headline, reserve comparative static). STATUS: WIP — expectations taken over
+   a flat prior U[A,B] put ~80% mass in stress, so p_s and ell_D come out far too large
+   (p_s~0.80, ell_D~1170 bps). The analytical gate is unaffected; the fix is a two-regime prior
+   / observable->(A,B,sigma,psi,R) mapping that makes stress rare (per-coin p_s USDC 0.001-0.008,
+   USDT ~2e-4). Marked in the script header. NOT used for any reported number yet.
+2. Presentation `paper/closed_game/Beamer/slides_closed_game.tex` (13 frames, compiles): the
+   author's workflow logic end to end — traditional rail (deposit underlying, expected loss 0)
+   vs the stablecoin fiat-to-fiat circuit (on-ramp; holding = counterparty observable + baseline
+   observable + stress global game with the two historical episodes; off-ramp); then the
+   expected-loss decomposition; then the risk premium across three use cases (full circuit); then
+   policy. Uses the observable-anchored numbers (20/60, basis 21/12, stress 2.6/0.3, totals
+   48.9/71.2, use cases 517/171/135).
+3. Intro `paper/closed_game/sections/01_introduction.tex` rewritten around the workflow thread:
+   two workflows, the leg-by-leg circuit, the holding leg's three pieces (counterparty observable,
+   baseline observable, stress = closed-form global game), the analytical properties, the assembled
+   headline, the three corridors, and the honest contribution (model earns its place through
+   mechanism and counterfactuals, the number is disciplined by observables). main_closed_game.pdf 57 pp.
+
+NEXT (phase 2 cont.): (i) re-specify the prior so the number engine returns realistic per-coin
+p_s and headline; (ii) rewrite section 4 to the closed-form model (replace the numerical
+fixed-point exposition); (iii) rewrite section 5 as parametrisation-by-observables + the
+reduced-form contrast (test b); (iv) propagate the workflow thread through sections 3-7; (v)
+hyphen audit + full recompile. fable5 remains the canonical submission version, untouched.
