@@ -1,6 +1,6 @@
 \section{Empirical comparison: three use cases, two stablecoins}\label{sec:empirical_comparison}
 
-Section~\ref{sec:identification} delivered two expected losses with inverted compositions, $\Pi_{\text{risk}}^{\text{USDC}} = 48.9$ and $\Pi_{\text{risk}}^{\text{USDT}} = 71.2$ basis points (Table~\ref{tab:dual_asset_premium}). We carry each into the corridor-level cost comparison, applying the USDC expected loss where USDC is the natural choice and the USDT expected loss where USDT dominates the real-world flow. The three use cases, set out in Table~\ref{tab:use_cases}, span the policy-relevant space: one corridor where a scaled public rail already exists and two where none does yet.
+Section~\ref{sec:identification} delivered two holding-leg expected losses, $\Pi_{\text{risk}}^{\text{USDC}} = 21.3$ and $\Pi_{\text{risk}}^{\text{USDT}} = 60.0$ basis points (Table~\ref{tab:dual_asset_premium}), both counterparty-led but separated by their stress depeg. We carry each into the corridor-level cost comparison together with the conversion fees of the circuit, applying the USDC loss where USDC is the natural choice and the USDT loss where USDT dominates the real-world flow. The three use cases, set out in Table~\ref{tab:use_cases}, span the policy-relevant space: one corridor where a scaled public rail already exists and two where none does yet.
 
 \begin{table}[H]
 \centering
@@ -24,7 +24,7 @@ The rails compared on each corridor are the following; the cost inputs and their
 
 \paragraph{Fintech remittance.} Non-bank providers (Wise, Remitly, WorldRemit) are materially cheaper on the major corridors; we use the RPW Q3 2025 non-bank means. The panel reports a G20 average of 3.66 percent for sending USD 500 \citep{rpw_q3_2025}.
 
-\paragraph{The stablecoin path.} The stablecoin path prices the full payment circuit. The sender converts fiat into the stablecoin at an on-ramp, transfers it on chain, and the recipient converts it back into local fiat at an off-ramp, so the cost is the sum of the on- and off-ramp platform fees, the on-chain transfer fee (about 37 basis points for USDT-on-Tron at USD 400, 15 for a low-fee L1/L2 USDC transfer), the destination basis, and the expected loss of Section~\ref{sec:risk_factors}. We set the on- and off-ramp platform fees at 25 basis points each, the central value of the 10-to-50-basis-point per-leg retail range documented in Appendix~\ref{app:cost_data}, and report the round-trip in a dedicated column of the use-case tables. This 50-basis-point round-trip is what a retail user without direct exchange access pays to enter and exit the stablecoin; it is distinct from the two execution costs the comparison already prices, the below-par conversion loss inside $\Pi_{\text{risk}}$ and the local-currency basis $b_{\text{dest}}$. At the upper end of the per-leg range the round-trip doubles to 100 basis points, which narrows the cross-border margins without reversing them, except that the USDT path on EU-Brazil draws level with Wise; the domestic dominance of PIX is only reinforced.
+\paragraph{The stablecoin path.} The stablecoin path prices the full payment circuit, and each leg is counted once. The sender converts fiat into the stablecoin at an on-ramp, holds it, transfers it on chain, and the recipient converts it back into local fiat at an off-ramp, so the cost is the sum of four distinct terms: the on- and off-ramp platform fees, the on-chain transfer fee (about 37 basis points for USDT-on-Tron at USD 400, 15 for a low-fee L1/L2 USDC transfer), the destination conversion basis $b_{\text{dest}}$, and the holding-leg expected loss $\Pi_{\text{risk}}$ of Section~\ref{sec:risk_factors}. The three fee terms and the holding loss do not overlap: $\Pi_{\text{risk}}$ is the risk of holding the coin (counterparty plus stress depeg), while the basis and the platform fees are the mechanical cost of moving between fiat and the coin, the baseline conversion cost that is a fee rather than a risk. We set the on- and off-ramp platform fees at 25 basis points each, the central value of the 10-to-50-basis-point per-leg retail range documented in Appendix~\ref{app:cost_data}, and report the round-trip in a dedicated column. At the upper end of the per-leg range the round-trip doubles to 100 basis points, which narrows the cross-border margins without reversing them; the domestic dominance of PIX is only reinforced.
 
 The total cost for a non-stablecoin rail is
 \begin{equation}\label{eq:total_cost_nonstable}
@@ -38,7 +38,7 @@ The destination basis is measured as the average deviation of the stablecoin pri
 
 The two expressions differ in one structural term, and that difference is the object of the comparison. A stablecoin bundles a means of payment with a settlement rail, whereas the public, incumbent, and fintech alternatives are rails that move a different asset: a commercial bank deposit, redeemed at par and settled in central bank money. The operational risk of the rail itself is common to all of them and nets out of the comparison; what does not net out is the asset the payer briefly holds. On the non-stablecoin rails that asset is a par-redeemable claim backstopped by deposit insurance, central bank settlement, and orderly resolution, so for a retail-sized payment the payer bears neither counterparty nor depeg risk, which is why their risk column is zero and why there is no system-level deposit run to calibrate, the public backstops having prevented one. The stablecoin replaces that publicly backstopped par promise with a private one, and $\Pi_{\text{risk}}^{a}$ is the cost of the substitution.
 
-Because $b_{\text{dest}}$ and the baseline depeg component of $\Pi_{\text{risk}}^{a}$ both touch the act of conversion, the two could in principle double-count the same cost, so we state explicitly why they do not. The destination basis is a level: the average premium of the stablecoin's local-currency quote over the official USD-quoted rate, a cost the converting sender pays with certainty and that is driven by local liquidity and the compliance cost that market makers pass through. The baseline depeg component is an expected loss: the one-sided, probability-weighted cost of converting the par claim below par on the USD leg, which is zero in most hours and concentrated in hours of elevated redemption pressure. The mechanical overlap between the two is the below-par portion of the USD-pair level already embedded in local-currency quotes, and that portion is bounded by the data: the USD-pair mean deviation from par in normal conditions is below one basis point, and its one-sided expectation is between $0.4$ and $2$ basis points across the two coins. Netting that bound out of the stablecoin totals would lower them by at most two basis points and changes no ranking in any use case, so we report the two terms unnetted.
+The two terms do not double-count the act of conversion, because the baseline conversion cost sits in exactly one place. It is the destination basis $b_{\text{dest}}$, the certain cost of converting the par claim into local fiat under normal conditions, driven by local liquidity and the compliance cost that market makers pass through. It is not also inside $\Pi_{\text{risk}}$: the holding loss is the counterparty exposure plus the stress depeg, the risk of holding the coin, with no baseline conversion term. The linear coordination model has zero baseline mid-depeg by construction, which is what lets us read the conversion cost cleanly off the observed basis and price it once, in the circuit, rather than twice.
 
 \subsection{Use case 1: Brazil domestic retail (USDT)}\label{sub:bra_domestic}
 
@@ -53,12 +53,12 @@ Rail & Fee (bps) & Ramp (bps) & Basis / WC (bps) & Risk (bps) & Total (bps) \\
 \midrule
 PIX                  & 0.0    & 0.0  & 0.00  & 0.0  & 0.0   \\
 TED bank transfer    & 200.0  & 0.0  & 0.62  & 0.0  & 200.6 \\
-USDT on Tron         & 375.0  & 50.0 & 21.0  & 71.2 & 517.2 \\
+USDT on Tron         & 375.0  & 50.0 & 21.0  & 60.0 & 506.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-PIX dominates at zero cost. USDT is the most expensive rail at 517 basis points; the flat-fee component at the small transaction value dominates the round-trip ramp fees, the off-ramp basis, and the expected-loss loading alike. The stablecoin is dominated by an upgraded public rail that already exists.
+PIX dominates at zero cost. USDT is the most expensive rail at 506 basis points; the flat-fee component at the small transaction value dominates the round-trip ramp fees, the off-ramp basis, and the expected-loss loading alike. The stablecoin is dominated by an upgraded public rail that already exists.
 
 \subsection{Use case 2: US-Mexico remittance (USDT)}\label{sub:us_mx}
 
@@ -71,14 +71,14 @@ A US-based household sends USD 400 to Mexico. USDT on Tron dominates real-world 
 \toprule
 Rail & Fee (bps) & Ramp (bps) & Basis / WC (bps) & Risk (bps) & Total (bps) \\
 \midrule
-USDT on Tron                     & 37.5  & 50.0 & 12.0 & 71.2 & 170.7 \\
+USDT on Tron                     & 37.5  & 50.0 & 12.0 & 60.0 & 159.5 \\
 Wise (fintech remittance)        & 250.0 & 0.0  & 1.23 & 0.0  & 251.2 \\
 SWIFT correspondent (Bank avg)   & 331.0 & 0.0  & 2.47 & 0.0  & 333.5 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-USDT wins at 171 basis points, beating Wise by 80 basis points and the SWIFT correspondent average by 163 basis points. The advantage survives the full payment circuit, the round-trip ramp fees and the Mexican off-ramp basis included. The fintech-upgraded incumbent (Wise) is closer to the stablecoin than the traditional incumbent (SWIFT): the cross-border payments innovation gap has been partly closed by fintech entry, and the residual gap is what the stablecoin path captures.
+USDT wins at 160 basis points, beating Wise by 92 basis points and the SWIFT correspondent average by 174 basis points. The advantage survives the full payment circuit, the round-trip ramp fees and the Mexican off-ramp basis included. The fintech-upgraded incumbent (Wise) is closer to the stablecoin than the traditional incumbent (SWIFT): the cross-border payments innovation gap has been partly closed by fintech entry, and the residual gap is what the stablecoin path captures.
 
 \subsection{Use case 3: EU-Brazil cross-border, USDC and USDT}\label{sub:eu_br}
 
@@ -91,8 +91,8 @@ An EU-based sender transfers USD 1,000 equivalent to a Brazilian recipient. Mark
 \toprule
 Rail & Fee (bps) & Ramp (bps) & Basis / WC (bps) & Risk (bps) & Total (bps) \\
 \midrule
-USDC cross-border               & 15.0  & 50.0 & 21.0 & 48.9 & 134.9 \\
-USDT cross-border               & 15.0  & 50.0 & 21.0 & 71.2 & 157.2 \\
+USDC cross-border               & 15.0  & 50.0 & 21.0 & 21.3 & 107.3 \\
+USDT cross-border               & 15.0  & 50.0 & 21.0 & 60.0 & 146.0 \\
 Wise (RPW Q3 2025 mean)         & 204.0 & 0.0  & 1.23 & 0.0  & 205.2 \\
 SWIFT correspondent             & 487.0 & 0.0  & 2.47 & 0.0  & 489.5 \\
 \bottomrule
@@ -101,20 +101,20 @@ SWIFT correspondent             & 487.0 & 0.0  & 2.47 & 0.0  & 489.5 \\
 
 The on-chain transfer cost of 15 basis points used for the stablecoin path is a representative cost of executing a retail-sized transfer on a low-fee L1 or L2 chain (Solana, Base, or Polygon), consistent with the post-2024 migration of retail USDC and USDT flow away from Ethereum mainnet, which \citet{klee_etal_2026_fragility} document as a congestion-driven response, with higher Ethereum gas fees raising net USDT transfers to lower-cost chains. On Ethereum mainnet the equivalent transfer cost at the USD 1,000 size would be of the order of 50 to 300 basis points depending on gas conditions; this would tighten the comparison against Wise but would not flip the ranking up to roughly 200 basis points of additional on-chain cost.
 
-The stablecoin path wins on this corridor: USDC at 135 basis points dominates Wise by 70 and SWIFT by 355; USDT at 157 dominates Wise by 48 and SWIFT by 332. The full payment circuit, ramp fees and off-ramp basis included, leaves the ordering intact, and the regulatory package introduced in November 2025 is not associated with any additional friction in the post-implementation window relative to the secular trend.
+The stablecoin path wins on this corridor: USDC at 107 basis points dominates Wise by 98 and SWIFT by 382; USDT at 146 dominates Wise by 59 and SWIFT by 344. The full payment circuit, ramp fees and off-ramp basis included, leaves the ordering intact, and the regulatory package introduced in November 2025 is not associated with any additional friction in the post-implementation window relative to the secular trend.
 
 The three corridors yield three results, one per regime.
 
 \begin{result}[Dominated where a public rail exists]\label{res:dominated}
-Where an upgraded public instant payment rail already serves the corridor, the stablecoin is dominated: on the Brazilian domestic corridor PIX clears at zero cost against the stablecoin's 517 basis points.
+Where an upgraded public instant payment rail already serves the corridor, the stablecoin is dominated: on the Brazilian domestic corridor PIX clears at zero cost against the stablecoin's 506 basis points.
 \end{result}
 
 \begin{result}[Wins where none exists]\label{res:wins}
-Where no upgraded public alternative exists, the stablecoin wins net of its expected loss and the full conversion circuit: 171 basis points against 251 (Wise) and 334 (SWIFT) on US-Mexico, and 135 against 205 and 490 on EU-Brazil, with the fintech-upgraded incumbent the closest competitor.
+Where no upgraded public alternative exists, the stablecoin wins net of its expected loss and the full conversion circuit: 160 basis points against 251 (Wise) and 334 (SWIFT) on US-Mexico, and 107 against 205 and 490 on EU-Brazil, with the fintech-upgraded incumbent the closest competitor.
 \end{result}
 
 \begin{result}[Absorbed once an upgraded public cross-border rail operates]\label{res:absorbed}
-Once an upgraded public cross-border rail is operational it dominates the stablecoin by one to two orders of magnitude; Section~\ref{sec:discussion} shows a projected BIS Nexus rail at 5 and 2 basis points against the stablecoin's 171 and 135.
+Once an upgraded public cross-border rail is operational it dominates the stablecoin by one to two orders of magnitude; Section~\ref{sec:discussion} shows a projected BIS Nexus rail at 5 and 2 basis points against the stablecoin's 160 and 107.
 \end{result}
 
 The three results trace the same ordering across the policy-relevant space, and they hold for both stablecoins: the per-asset distinction changes the magnitude of the expected loss, not the regime. The consolidated summary is reported in the internet appendix; the supervisory implication of the inverted USDC and USDT compositions is taken up in Section~\ref{sub:policy_implications}.

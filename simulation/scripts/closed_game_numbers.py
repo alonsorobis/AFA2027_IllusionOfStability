@@ -40,10 +40,16 @@ def psi_from_trough(trough, R):
 
 COINS = {
     "USDC": dict(R=0.50, sigma=0.22, sigma_theta=0.0074, omega=0.010, phi=0.0015,
-                 h=0.01, xi=0.20, basis=21.0, trough_obs=0.9022, p_s_emp=0.005),
+                 h=0.01, xi=0.20, basis=21.0, trough_obs=0.9022, p_s_emp=0.005,
+                 episode_depth=240.0),
     "USDT": dict(R=0.85, sigma=0.24, sigma_theta=0.0507, omega=0.010, phi=0.0015,
-                 h=0.02, xi=0.30, basis=12.0, trough_obs=0.9751, p_s_emp=0.0003),
+                 h=0.02, xi=0.30, basis=12.0, trough_obs=0.9751, p_s_emp=0.0003,
+                 episode_depth=28.0),
 }
+# circuit fees (view b): basis and ramp are CIRCUIT fees, counted once, NOT in Pi_risk.
+F_RAMP_LEG = 25.0   # on-ramp and off-ramp platform fee, per leg
+ONCHAIN = {"UC1_BR_USDT": 375.0, "UC2_USMX_USDT": 37.5, "UC3_EUBR": 15.0}
+BASIS_LOCAL = {"BR": 21.0, "MX": 12.0}
 P_LO = 0.50
 MU_THETA = 1.0
 
@@ -96,8 +102,8 @@ def ell_D_and_ps(p, psi, s, sigma_theta=None):
 
 def main():
     rows = {}
-    print(f"{'coin':>5} {'psi':>6} {'s*':>7} {'theta_s':>8} {'p_s':>9} {'p_s_emp':>8} "
-          f"{'ellC':>5} {'basis':>6} {'ellD':>6} {'TOTAL':>7} {'fable5':>7} {'dPi/dR':>8}")
+    print(f"{'coin':>5} {'psi':>6} {'s*':>7} {'p_s':>9} {'p_s_emp':>8} "
+          f"{'ellC':>5} {'stress':>7} {'Pi_risk':>8} {'basis':>6} {'dPi/dR':>8}")
     for c, p in COINS.items():
         psi = psi_from_trough(p["trough_obs"], p["R"])
         s = solve_threshold(p, psi)
@@ -111,18 +117,32 @@ def main():
         s2 = solve_threshold(p2, psi2)
         ellD2, _, _ = ell_D_and_ps(p2, psi2, s2)
         dPi_dR = (ellD2 - ell_D) / dR
-        fable5 = {"USDC": 48.9, "USDT": 71.2}[c]
+        # VIEW (b): risk = counterparty + stress only (baseline depeg is a circuit fee, not risk)
+        ell_Ds_risk = p_s * p["episode_depth"]           # stress as p_s x observed episode depth
+        pi_risk = ell_C + ell_Ds_risk                    # holding risk, no basis
         rows[c] = dict(psi=psi, s=s, theta_s=theta_s, p_s=p_s, ell_C=ell_C,
-                       basis=p["basis"], ell_D=ell_D, total=total, dPi_dR=dPi_dR)
-        print(f"{c:>5} {psi:>6.3f} {s:>7.3f} {theta_s:>8.3f} {p_s:>9.5f} {p['p_s_emp']:>8.4f} "
-              f"{ell_C:>5.0f} {p['basis']:>6.1f} {ell_D:>6.2f} {total:>7.1f} {fable5:>7.1f} {dPi_dR:>8.2f}")
+                       ell_Ds_risk=ell_Ds_risk, pi_risk=pi_risk,
+                       basis=p["basis"], dPi_dR=dPi_dR)
+        print(f"{c:>5} {psi:>6.3f} {s:>7.3f} {p_s:>9.5f} {p['p_s_emp']:>8.4f} "
+              f"{ell_C:>5.0f} {ell_Ds_risk:>7.2f} {pi_risk:>8.1f} {p['basis']:>6.1f} {dPi_dR:>8.2f}")
+
+    # VIEW (b) circuit totals: fee + 2*ramp + basis + pi_risk (basis counted ONCE)
+    R2 = 2 * F_RAMP_LEG
+    uc = {
+        "UC1_BR_USDT_40":    ONCHAIN["UC1_BR_USDT"] + R2 + BASIS_LOCAL["BR"] + rows["USDT"]["pi_risk"],
+        "UC2_USMX_USDT_400": ONCHAIN["UC2_USMX_USDT"] + R2 + BASIS_LOCAL["MX"] + rows["USDT"]["pi_risk"],
+        "UC3_EUBR_USDC_1000": ONCHAIN["UC3_EUBR"] + R2 + BASIS_LOCAL["BR"] + rows["USDC"]["pi_risk"],
+        "UC3_EUBR_USDT_1000": ONCHAIN["UC3_EUBR"] + R2 + BASIS_LOCAL["BR"] + rows["USDT"]["pi_risk"],
+    }
+    rows["use_cases"] = uc
+    print("\nVIEW (b) use-case totals (basis counted once, risk = cp + stress):")
+    for k, v in uc.items():
+        print(f"  {k:24s} {v:7.1f}")
+    print(f"  UC2 vs Wise 251.2: +{251.2-uc['UC2_USMX_USDT_400']:.1f};  UC3 USDC vs Wise 205.2: +{205.2-uc['UC3_EUBR_USDC_1000']:.1f};  UC3 USDT vs Wise 205.2: +{205.2-uc['UC3_EUBR_USDT_1000']:.1f}")
     (__import__("pathlib").Path(__file__).resolve().parents[2] / "data" / "processed"
      / "closed_game_numbers.json").write_text(json.dumps(rows, indent=2))
-    print("\n - p_s endogenous (Phi of the D=R boundary) now matches the empirical per-coin frequency.")
-    print(" - TOTAL is observable-anchored (h*xi + basis + model stress depeg); compare to fable5.")
-    print(" - dPi/dR < 0: the analytical reserve comparative static, numerically confirmed.")
-    print(" - psi backed out from the observed trough; USDC's low R (suspended primary) is what")
-    print("   makes it depeg-dominant, USDT's high R (open primary) leaves it counterparty-dominant.")
+    print("\n - Pi_risk (holding) = counterparty + stress only; basis is a circuit fee counted once.")
+    print(" - p_s endogenous matches the empirical per-coin frequency; dPi/dR < 0 distinguishes the coins.")
 
 
 if __name__ == "__main__":

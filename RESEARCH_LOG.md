@@ -707,3 +707,30 @@ anti-double-counting paragraph; in the closed-game they coincide numerically, wh
 resolution: either (a) baseline depeg is an expected loss of the holding leg (distinct from the
 circuit's off-ramp basis, fable5 view), or (b) it is the off-ramp conversion fee of the circuit and
 should not also sit in Pi_risk. Section 6 is left unrecalculated pending this decision.
+
+## Session 59 (2026-06-11) — Closed-game view (b): risk vs fee separation, recalculated use cases
+
+Adopted view (b): the baseline depeg is a circuit fee (the conversion basis), not a holding risk.
+- Pi_risk (holding) = counterparty + stress only: USDC 21.3 (20 cp + 1.3 stress), USDT 60.0
+  (60 cp + ~0). Both counterparty-led once the conversion cost is recognised as a fee.
+- Circuit (counted once): on-chain fee + 2x25 ramp + b_dest basis + Pi_risk. Use-case totals
+  drop (no double count): UC1 506, UC2 159.5, UC3 USDC 107.3, USDT 146.0; margins over Wise
+  +92 / +98 / +59 (stablecoin wins by more). Nexus overlay unchanged (5/2).
+- closed_game_numbers.py rewritten for view (b); data/processed/closed_game_numbers.json.
+- Section 5 decomposition rewritten (holding loss = cp + stress); heterogeneity REFRAMED:
+  not "inverted compositions (USDC depeg-dominant)" but counterparty vs stress-depeg severity.
+  The conversion cost is no longer counted as risk, so both coins are counterparty-led in the
+  pure risk; they separate on stress-depeg severity (USDC deep trough 978 bps / USDT 249).
+- Figure reformulated (make_fig_decomp_closed_game.py): scatter counterparty (x) vs stress-depeg
+  severity (y); USDC low-cp/deep-depeg, USDT high-cp/shallow-depeg, opposite corners.
+- Section 6 use-case tables, results, Nexus table, and the (now-obsolete) anti-double-counting
+  paragraph all rewritten to view (b). main_closed_game.pdf 49 pp, 0 undefined, 0 em dashes.
+
+Honest consequence the author accepted: the fable5 "USDC is depeg-dominant" headline weakens
+(it counted the conversion cost as risk); the heterogeneity survives, reframed on the
+counterparty / stress-depeg-severity axis, and the policy reading (supervise USDC for secondary
+depth + primary access, USDT for reserves) is intact.
+
+PENDING (author plan, next): (3) workflow figures in the paper (traditional RTGS/SWIFT circuit
+with expected loss 0 vs stablecoin circuit leg-by-leg, as in the deck); (4) full read-through;
+update the Beamer deck to view (b) numbers (21/60, UC 506/159.5/107.3/146).
