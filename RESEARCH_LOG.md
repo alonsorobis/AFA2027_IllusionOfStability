@@ -734,3 +734,25 @@ depth + primary access, USDT for reserves) is intact.
 PENDING (author plan, next): (3) workflow figures in the paper (traditional RTGS/SWIFT circuit
 with expected loss 0 vs stablecoin circuit leg-by-leg, as in the deck); (4) full read-through;
 update the Beamer deck to view (b) numbers (21/60, UC 506/159.5/107.3/146).
+
+## Session 59 cont. (2026-06-11) — Closed-game workflow figures + full read-through to view (b)
+
+Completed steps 3-4 of the author's plan. main_closed_game.pdf 50 pp (0 undefined, 0 em dashes),
+slides 13 pp.
+- (3) Workflow figure: new TikZ Figure 1 in Section 3 placing the two payment workflows side by
+  side -- traditional rail (deposit underlying, expected loss 0) vs the stablecoin fiat-to-fiat
+  circuit (on-ramp/on-chain/off-ramp observable fees, holding leg = counterparty observable +
+  stress global game). Rendered and verified legible.
+- (4) Read-through propagating view (b) everywhere it was still stale: intro (holding loss
+  21/60, "both counterparty-led, separated by stress-depeg severity", dropped "inverted
+  compositions"); Section 7 policy (heterogeneity reframed onto counterparty vs stress-depeg
+  severity; Goel-Lewrick mapping kept); Section 8 conclusion (21/60); A2 regulatory band
+  recomputed for view (b) (no baseline row; Pi_risk 21.3 -> adverse 34.8-47.1 USDC, 60 ->
+  75.5-105.8 USDT; SWIFT margins 382/356 USDC, 344/298 USDT); the reduced-form benchmark in
+  Section 5 and Appendix B reframed onto the full holding-and-conversion cost (43.6/72.3 reduced
+  vs 42/72 closed). Beamer deck updated to view (b) (holding loss 21/60, UC 506/160/107,
+  decomposition cp+stress, heterogeneity on stress-depeg severity).
+Note: internet_appendix IA_supplementary still carries 7-parameter calibration material
+(two-class, marginally identified panels); it is NOT in the main build and is left for a later
+internet-appendix pass if that document is used.
+The closed_game paper is now internally coherent in view (b) end to end. fable5 untouched.

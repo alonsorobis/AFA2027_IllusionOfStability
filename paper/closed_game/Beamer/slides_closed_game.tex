@@ -184,24 +184,24 @@ reserves \(R\), residual to a secondary with depth \(1/\psi\)):
 
 % ---------------------------------------------------------------------------
 \begin{frame}{Leg 4 --- off-ramp, and the assembled expected loss}
-Convert the coin back to local fiat: platform fee \(+\) destination basis.
+Convert the coin back to local fiat: the conversion basis and platform fee are
+\emph{circuit fees}, not holding risk. The holding loss is counterparty $+$ stress.
 \vspace{0.4em}
 \begin{center}
 \begin{tabular}{lccc}
 \toprule
-Expected-loss component & USDC & USDT & source \\
+Holding-loss component & USDC & USDT & source \\
 \midrule
 \(\ell_C\) counterparty            & 20.0 & 60.0 & market proxies \\
-\(\ell_{D,b}\) baseline depeg       & 26.4 & 10.9 & observed basis \\
-\(\ell_{D,s}\) stress depeg (wtd)   & \phantom{0}2.6 & \phantom{0}0.3 & global game \(\times\,p_s\) \\
+\(\ell_{D,s}\) stress depeg (wtd)   & \phantom{0}1.3 & \phantom{0}0.0 & global game \(\times\,p_s\) \\
 \midrule
-\(\El\) total                       & \textbf{48.9} & \textbf{71.2} & \\
+\(\El\) holding loss               & \textbf{21.3} & \textbf{60.0} & \\
 \bottomrule
 \end{tabular}
 \end{center}
 \vspace{0.4em}
-\textbf{Inverted compositions:} USDC depeg-dominant, USDT counterparty-dominant.
-The same machinery, two issuers, two opposite risk profiles.
+Both counterparty-led, but separated by \textbf{stress-depeg severity}: USDC's
+primary redemption is suspension-prone (deep trough), USDT's stayed open (mild).
 \end{frame}
 
 % ---------------------------------------------------------------------------
@@ -213,9 +213,9 @@ against public, incumbent, and fintech rails.
 \toprule
 Use case & Coin & Stablecoin (bps) & Best alternative & Outcome \\
 \midrule
-BR domestic \$40   & USDT & 517 & PIX (0)    & \textcolor{trad}{dominated} \\
-US--MX \$400       & USDT & 171 & Wise (251) & \textcolor{stab}{wins by 80} \\
-EU--BR \$1{,}000   & USDC & 135 & Wise (205) & \textcolor{stab}{wins by 70} \\
+BR domestic \$40   & USDT & 506 & PIX (0)    & \textcolor{trad}{dominated} \\
+US--MX \$400       & USDT & 160 & Wise (251) & \textcolor{stab}{wins by 92} \\
+EU--BR \$1{,}000   & USDC & 107 & Wise (205) & \textcolor{stab}{wins by 98} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -233,8 +233,8 @@ EU--BR \$1{,}000   & USDC & 135 & Wise (205) & \textcolor{stab}{wins by 70} \\
 \begin{column}{0.5\textwidth}
 \textbf{Heterogeneity}
 \begin{itemize}
-  \item USDC: depeg-dominant \(\Rightarrow\) supervise secondary-market depth and liquidity.
-  \item USDT: counterparty-dominant \(\Rightarrow\) supervise reserve composition and attestation.
+  \item USDC: deep stress depeg \(\Rightarrow\) supervise secondary-market depth and primary-redemption access.
+  \item USDT: counterparty-led \(\Rightarrow\) supervise reserve composition and attestation.
   \item A single rulebook misprices one of them.
 \end{itemize}
 \end{column}
@@ -253,9 +253,9 @@ EU--BR \$1{,}000   & USDC & 135 & Wise (205) & \textcolor{stab}{wins by 70} \\
 \begin{frame}{Takeaways}
 \begin{enumerate}
   \item The announced fee omits a structural expected loss on the liability the sender holds.
-  \item We price it leg by leg: counterparty and baseline are \textbf{observable};
+  \item We price it leg by leg: counterparty and the conversion basis are \textbf{observable};
         the stress run is the \textbf{global game}, closed form, with an endogenous per-coin \(p_s\).
-  \item USDC 49 bps (depeg-dominant) vs USDT 71 bps (counterparty-dominant): \textbf{two instruments, not one category}.
+  \item Holding loss USDC 21 bps vs USDT 60 bps, both counterparty-led but split by stress-depeg severity: \textbf{two instruments, not one category}.
   \item Over the full circuit the stablecoin is dominated where a public rail exists,
         wins where none does, and is absorbed once an upgraded public cross-border rail goes live.
 \end{enumerate}

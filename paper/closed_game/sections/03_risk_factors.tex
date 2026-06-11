@@ -1,6 +1,44 @@
 \section{Risk factors of stablecoins}\label{sec:risk_factors}
 
-The holding leg of the stablecoin workflow is where the expected loss lives. A holder of a fiat-backed stablecoin carries, however briefly, a private-issuer liability convertible into the fiat unit of account at par on a best-effort basis. That promise can fail in two ways, and the two failures are economically distinct. The issuer may not hold enough liquid reserves of sufficient credit quality to honour redemption at par, in which case the holder bears a \emph{counterparty} loss. Or the market for converting the liability outside the issuer's primary venue may be too thin, so the realised conversion price falls below par when demand to convert is high, in which case the holder bears a \emph{depeg} loss. The holding leg therefore carries an expected loss with two components. This section sets out each in turn: a counterparty component, an issuer-level credit exposure we read from market proxies; and a depeg component, whose baseline piece is the observable cost of converting under normal conditions and whose stress piece is a coordination outcome we price with the closed-form global game of Section~\ref{sec:model}.
+The holding leg of the stablecoin workflow is where the expected loss lives. A holder of a fiat-backed stablecoin carries, however briefly, a private-issuer liability convertible into the fiat unit of account at par on a best-effort basis. That promise can fail in two ways, and the two failures are economically distinct. The issuer may not hold enough liquid reserves of sufficient credit quality to honour redemption at par, in which case the holder bears a \emph{counterparty} loss. Or the market for converting the liability outside the issuer's primary venue may be too thin, so the realised conversion price falls below par when demand to convert is high, in which case the holder bears a \emph{depeg} loss. The holding leg therefore carries an expected loss with two components. This section sets out each in turn: a counterparty component, an issuer-level credit exposure we read from market proxies; and a depeg component, whose baseline piece is the observable cost of converting under normal conditions and whose stress piece is a coordination outcome we price with the closed-form global game of Section~\ref{sec:model}. Figure~\ref{fig:workflows} places both alongside the traditional workflow, locating where each cost lives and where the model is needed.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\footnotesize, >=Latex, node distance=5mm,
+  box/.style={draw, rounded corners=2pt, minimum height=8mm, inner sep=4pt, align=center},
+  trad/.style={box, fill=blue!8},
+  stab/.style={box, fill=red!7},
+  hold/.style={box, fill=green!10, minimum height=12mm},
+  lab/.style={font=\scriptsize, align=center},
+  fee/.style={font=\scriptsize\itshape, align=center}
+]
+% --- Panel A: traditional rail
+\node[lab, anchor=west] at (0,2.55) {\textbf{(a) Traditional rail (SWIFT / RTGS)}};
+\node[trad] (ta) at (1.2,1.7) {sender\\deposit};
+\node[trad] (tb) at (4.4,1.7) {rail\\(SWIFT/RTGS)};
+\node[trad] (tc) at (7.6,1.7) {recipient\\deposit};
+\draw[->] (ta) -- node[fee, above]{fee + FX} (tb);
+\draw[->] (tb) -- node[fee, above]{settlement} (tc);
+\node[lab, anchor=west, text=blue!50!black] at (9.0,1.7) {underlying $=$ deposit\\(par, insured, resolved)\\[2pt]\textbf{expected loss $=0$}};
+% --- Panel B: stablecoin circuit
+\node[lab, anchor=west] at (0,0.7) {\textbf{(b) Stablecoin circuit (fiat to fiat)}};
+\node[stab] (sa) at (0.9,-0.4) {fiat};
+\node[stab] (sb) at (3.0,-0.4) {on-ramp};
+\node[hold] (sc) at (5.5,-0.4) {hold coin};
+\node[stab] (sd) at (8.0,-0.4) {off-ramp};
+\node[stab] (se) at (10.2,-0.4) {local\\fiat};
+\draw[->] (sa) -- (sb);
+\draw[->] (sb) -- node[fee, above]{on-chain} (sc);
+\draw[->] (sc) -- (sd);
+\draw[->] (sd) -- (se);
+\node[fee, below=1mm of sb, text=red!55!black] {fee\\(observable)};
+\node[fee, below=1mm of sd, text=red!55!black] {basis + fee\\(observable)};
+\node[lab, above=0.5mm of sc, text=green!40!black] {$\ell_C$ counterparty (obs.)\\$+$ stress depeg};
+\node[lab, anchor=west, text=green!40!black] at (11.0,-0.4) {stress $=$\\global game};
+\end{tikzpicture}
+\caption{Two payment workflows. On the traditional rail (a) the payer holds a par-redeemable, insured deposit, so the expected loss on the underlying is zero. On the stablecoin circuit (b) the payer runs fiat to fiat: the on-ramp, on-chain, and off-ramp legs are observable fees (the off-ramp also carries the conversion basis), while the holding leg carries the expected loss, the observable counterparty exposure $\ell_C$ plus the stress depeg, the one piece priced by the closed-form global game.}\label{fig:workflows}
+\end{figure}
 
 \subsection{Counterparty credit risk}\label{sub:counterparty}
 
