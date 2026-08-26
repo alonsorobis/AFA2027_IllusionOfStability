@@ -1,0 +1,50 @@
+Horizonte: 25 anos de aportacion (42 -> 67), renta durante 23 anos (67 -> 90)
+Aportacion anual T1: 5,500 EUR (3,000 nomina + 2,500 voluntaria), creciendo 2%/ano
+Aportacion anual T2: 2,500 EUR
+
+--- Escenario Prudente (3% anual nominal) ---
+  Capital T1 a los 67 :      490,029 EUR   (en euros de hoy: 298,688)
+  Capital T2 a los 67 :      124,809 EUR   (en euros de hoy: 76,075)
+  CAPITAL CONJUNTO    :      614,838 EUR   (en euros de hoy: 374,763)
+  Total aportado      :      376,742 EUR  ->  rendimiento generado: 238,095
+  Renta mensual bruta hasta los 90: 3,074 EUR/mes (T1 2,450 + T2 624)
+     equivalente en euros de hoy        : 1,874 EUR/mes
+  INGRESO TOTAL JUBILADO (SS 2,500 + renta): 5,574 EUR/mes brutos
+
+--- Escenario Central (5% anual nominal) ---
+  Capital T1 a los 67 :      709,485 EUR   (en euros de hoy: 432,453)
+  Capital T2 a los 67 :      164,104 EUR   (en euros de hoy: 100,026)
+  CAPITAL CONJUNTO    :      873,589 EUR   (en euros de hoy: 532,479)
+  Total aportado      :      376,742 EUR  ->  rendimiento generado: 496,846
+  Renta mensual bruta hasta los 90: 4,367 EUR/mes (T1 3,547 + T2 820)
+     equivalente en euros de hoy        : 2,662 EUR/mes
+  INGRESO TOTAL JUBILADO (SS 2,500 + renta): 6,867 EUR/mes brutos
+
+--- Escenario Optimista (7% anual nominal) ---
+  Capital T1 a los 67 :    1,040,706 EUR   (en euros de hoy: 634,342)
+  Capital T2 a los 67 :      219,192 EUR   (en euros de hoy: 133,604)
+  CAPITAL CONJUNTO    :    1,259,898 EUR   (en euros de hoy: 767,947)
+  Total aportado      :      376,742 EUR  ->  rendimiento generado: 883,155
+  Renta mensual bruta hasta los 90: 6,299 EUR/mes (T1 5,203 + T2 1,096)
+     equivalente en euros de hoy        : 3,839 EUR/mes
+  INGRESO TOTAL JUBILADO (SS 2,500 + renta): 8,799 EUR/mes brutos
+
+==============================================================================
+SENSIBILIDAD: capital conjunto a los 67 segun aportacion de nomina de T1
+==============================================================================
+  Nomina/ano |       Prudente |        Central |      Optimista
+           0 |        478,886 |        699,014 |      1,032,688
+       1,500 |        546,862 |        786,301 |      1,146,293
+       3,000 |        614,838 |        873,589 |      1,259,898
+       4,500 |        682,814 |        960,876 |      1,373,503
+       6,000 |        750,789 |      1,048,164 |      1,487,107
+       8,500 |        864,082 |      1,193,643 |      1,676,449
+
+==============================================================================
+DURACION DE LA RENTA (escenario Central) segun horizonte elegido
+==============================================================================
+  Agotar a los 82 (15 anos):    6,016 EUR/mes brutos ( 3,667 en euros de hoy)  -> total con SS: 8,516
+  Agotar a los 85 (18 anos):    5,222 EUR/mes brutos ( 3,183 en euros de hoy)  -> total con SS: 7,722
+  Agotar a los 90 (23 anos):    4,367 EUR/mes brutos ( 2,662 en euros de hoy)  -> total con SS: 6,867
+  Agotar a los 95 (28 anos):    3,827 EUR/mes brutos ( 2,333 en euros de hoy)  -> total con SS: 6,327
+  Renta perpetua (solo rendimientos, capital intacto): 2,184 EUR/mes
